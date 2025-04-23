@@ -1,4 +1,3 @@
-// src/app/components/Pagination.tsx
 'use client'
 import React, { FC, useState } from 'react'
 
