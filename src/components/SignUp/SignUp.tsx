@@ -1,5 +1,5 @@
-import React from 'react'
-import './SignUp.css'
+import React from "react";
+import "./SignUp.css";
 
 const SignUp: React.FC = () => {
   return (
@@ -49,7 +49,7 @@ const SignUp: React.FC = () => {
           </form>
 
           <p className="signup-footer-text">
-            Already have an account ?{' '}
+            Already have an account ?{" "}
             <a href="/login" className="signup-login-link">
               Login
             </a>
@@ -57,7 +57,7 @@ const SignUp: React.FC = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;

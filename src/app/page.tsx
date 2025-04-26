@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Pagination from "./components/Pagination";
-import SignUp from '@/components/SignUp/SignUp'
+import SignUp from "@/components/SignUp/SignUp";
 
 export default function Page() {
   const handlePageChange = (page: number) => {
@@ -10,10 +10,10 @@ export default function Page() {
 
   return (
     <>
-    <SignUp />
-    <main style={{ padding: 20 }}>
-      <Pagination totalPages={10} onPageChange={handlePageChange} />
-    </main>
+      <SignUp />
+      <main style={{ padding: 20 }}>
+        <Pagination totalPages={10} onPageChange={handlePageChange} />
+      </main>
     </>
   );
 }
