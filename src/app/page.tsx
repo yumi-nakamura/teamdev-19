@@ -54,7 +54,7 @@ export default function Page() {
                 <PostCard key={index} {...blogPosts[0]} />
               ))}
           </div>
-          <div>
+          <div style={{ padding: 20 }}>
             <Pagination totalPages={10} onPageChange={handlePageChange} />
           </div>
         </main>
