@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 
+interface Comment {
+  id: number;
+  user_id: string;
+  post_id: number;
+  content: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
 const sectionStyle: React.CSSProperties = {
   maxWidth: "771px",
   margin: "32px auto",
@@ -84,12 +93,21 @@ const commentTimestampStyle: React.CSSProperties = {
 
 export const CommentSection = () => {
   const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState<string[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const handleAddComment = () => {
     if (commentText.trim() === "") return;
-    setComments([...comments, commentText]);
-    setCommentText("");
+    setComments([
+      ...comments,
+      {
+        id: Math.floor(Math.random() * 1000) + 1, // ランダムにIDを割り振る（バックエンド作成後は消す）
+        user_id: "abcdefg", // バックエンド作成後は消す
+        post_id: 1, // バックエンド作成後は消す
+        content: commentText,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+    ]);
   };
 
   return (
@@ -112,7 +130,7 @@ export const CommentSection = () => {
 
       <div style={commentListStyle}>
         {comments.map((comment, index) => (
-          <div key={index} style={commentItemStyle}>
+          <div key={comment.id} style={commentItemStyle}>
             <div style={commentAvatarContainerStyle}>
               <div style={commentAvatarStyle}>
                 <span className="material-symbols-outlined">f</span>
@@ -120,7 +138,7 @@ export const CommentSection = () => {
               <div style={usernameStyle}>user</div>
             </div>
             <div>
-              <p style={commentTextStyle}>{comment}</p>
+              <p style={commentTextStyle}>{comment.content}</p>
               <span style={commentTimestampStyle}>a min ago</span>
             </div>
           </div>
@@ -129,4 +147,3 @@ export const CommentSection = () => {
     </section>
   );
 };
-
