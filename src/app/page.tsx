@@ -1,23 +1,21 @@
 "use client";
 import React from "react";
 import Pagination from "./components/Pagination";
-<<<<<<< HEAD
 import PostCard from "../components/PostCard";
 import "./globals.css";
-=======
->>>>>>> main
 
 export default function Page() {
   const blogPosts = [
     {
-      id: "1",
+      post_id: "1",
       title: "ブログタイトル",
-      author: "Name",
-      category: "category",
-      publishedAt: "2025-00-00",
-      detail:
+      user_id: "Name",
+      category_id: "category",
+      created_at: "2025-00-00",
+      updated_at: "2025-00-00",
+      content:
         "ブログの冒頭部分ブログの冒頭部分ブログの冒頭部分ブログの冒頭部分…",
-      thumbnailUrl: "/sample-thumbnail.jpg",
+      image_path: "/sample-thumbnail.jpg",
     },
   ];
 
@@ -27,7 +25,6 @@ export default function Page() {
   };
 
   return (
-<<<<<<< HEAD
     <>
       <div className="bg-gray-50 text-gray-900">
         <header className="bg-white px-4 py-3">
@@ -62,16 +59,10 @@ export default function Page() {
             <Pagination totalPages={10} onPageChange={handlePageChange} />
           </div>
         </main>
-
         <footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">
           © {new Date().getFullYear()} TeamDev19. All rights reserved.
         </footer>
       </div>
     </>
-=======
-    <main style={{ padding: 20 }}>
-      <Pagination totalPages={10} onPageChange={handlePageChange} />
-    </main>
->>>>>>> main
   );
 }

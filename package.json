@@ -28,15 +28,10 @@
     "tailwindcss": "^4.1.4",
     "typescript": "^5"
   },
-  "description": "## 環境構築",
-  "main": "postcss.config.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yumi-nakamura/teamdev-19.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/yumi-nakamura/teamdev-19/issues"
   },
