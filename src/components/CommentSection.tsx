@@ -133,7 +133,7 @@ export const CommentSection = () => {
           <div key={comment.id} style={commentItemStyle}>
             <div style={commentAvatarContainerStyle}>
               <div style={commentAvatarStyle}>
-                <span className="material-symbols-outlined">f</span>
+                <span>f</span> {/* アバターシンボル処理確定後修正 */}
               </div>
               <div style={usernameStyle}>user</div>
             </div>
