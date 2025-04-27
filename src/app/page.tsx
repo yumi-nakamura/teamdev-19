@@ -66,7 +66,3 @@ export default function Page() {
     </>
   );
 }
-
-<main style={{ padding: 20 }}>
-  <Pagination totalPages={10} onPageChange={handlePageChange} />
-</main>;
