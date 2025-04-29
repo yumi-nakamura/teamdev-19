@@ -54,7 +54,9 @@ const Pagination: FC<Props> = ({ totalPages, onPageChange }) => {
         onClick={nextPage}
         disabled={currentPage === totalPages}
         className={`min-w-8 h-8 border border-transparent bg-transparent font-bold text-gray-900 px-6 py-2 transition-all duration-100 active:text-xs active:text-gray-400 active:font-semibold focus:outline-none focus:ring-0 ${
-          currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "opacity-100"
+          currentPage === totalPages
+            ? "opacity-50 cursor-not-allowed"
+            : "opacity-100"
         } justify-self-end`}
       >
         Next Page →
