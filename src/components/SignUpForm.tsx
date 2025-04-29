@@ -37,12 +37,17 @@ const SignUpForm = () => {
 
       {/* メインフォーム */}
       <div className="w-full max-w-md space-y-8">
-        <h1 className="text-3xl font-bold text-center text-gray-900">Sign Up</h1>
-        
+        <h1 className="text-3xl font-bold text-center text-gray-900">
+          Sign Up
+        </h1>
+
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Name
               </label>
               <input
@@ -58,7 +63,10 @@ const SignUpForm = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email
               </label>
               <input
@@ -74,7 +82,10 @@ const SignUpForm = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
@@ -109,4 +120,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm; 
+export default SignUpForm;
