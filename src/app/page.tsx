@@ -3,6 +3,7 @@ import React from "react";
 import Pagination from "../components/Pagination";
 import PostCard from "../components/PostCard";
 import "./globals.css";
+import { SearchBar } from "../components/SearchBar";
 
 export default function Page() {
   const blogPosts = [
@@ -46,6 +47,8 @@ export default function Page() {
             </nav>
           </div>
         </header>
+
+        <SearchBar />
 
         <main>
           <div className="max-w-6xl mx-auto flex flex-wrap gap-15 m-15">
