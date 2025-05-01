@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Pagination from "./components/Pagination";
+import Pagination from "../components/Pagination";
 import PostCard from "../components/PostCard";
 import "./globals.css";
 
