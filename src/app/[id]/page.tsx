@@ -47,7 +47,7 @@ export default function Profile() {
               />
               <div className="absolute top-full right-0 mt-2 w-33 bg-gray-300 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
                 <div className="px-4 py-2 mt-1.5 text-gray-800 flex justify-center text-sm font-bold">
-                  User name
+                  User Name
                 </div>
                 <div className="flex justify-center">
                   <button className="w-24 px-4 py-1.5 mb-3 text-sm text-white bg-red-400 hover:bg-red-500 rounded-full font-bold">
