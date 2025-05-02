@@ -51,7 +51,7 @@ export default function Page() {
         <SearchBar />
 
         <main>
-          <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16">
+          <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
             {Array(9)
               .fill(null)
               .map((_, index) => (
