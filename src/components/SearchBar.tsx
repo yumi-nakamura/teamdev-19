@@ -2,7 +2,7 @@ import React from "react";
 
 export const SearchBar = () => {
   return (
-    <div className="mt-[50px] flex items-center justify-center">
+    <div className="mt-[70px] flex items-center justify-center">
       <input
         type="text"
         placeholder="Search..."
