@@ -103,3 +103,5 @@ package に更新がないか、確認するため、 `npm install` コマンド
 
 - マージはスカッシュコミット（プルリク内のコミットを 1 つににまとめてコミット）でお願いします。
   - マージの際に`Marge Pull Request`ではなく`Squash and merge`を選んでマージしてください。
+ 
+- test
