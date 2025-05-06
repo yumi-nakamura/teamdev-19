@@ -2,14 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 
 type PostCardProps = {
-  post_id: int8;
-  user_id: uuid;
-  category_id: int8;
-  title: varchar;
-  content: text;
-  image_path: text;
-  created_at: timestamp;
-  updated_at: timestamp;
+  post_id: string;
+  user_id: string;
+  category_id: string;
+  title: string;
+  content: string;
+  image_path: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export default function PostCard({
@@ -24,7 +24,7 @@ export default function PostCard({
 }: PostCardProps) {
   return (
     <Link
-      href={`/blog/${post_id}`}
+      href={`/article/${post_id}`}
       className="block bg-white rounded-lg w-75 overflow-hidden shadow-md hover:shadow-lg transition"
     >
       <div className="relative w-full h-48">
