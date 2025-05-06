@@ -54,7 +54,7 @@ const LoginPage = () => {
                   type="email"
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="Enter your name"
+                  placeholder="Enter your Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -72,7 +72,7 @@ const LoginPage = () => {
                   type="password"
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="Enter your name"
+                  placeholder="Enter your Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
