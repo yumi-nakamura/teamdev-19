@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { CommentSection } from "./CommentSection";
+import Header from "./Header";
 
 export const ArticleDetail = () => {
   // ダミーデータ
@@ -13,21 +14,7 @@ export const ArticleDetail = () => {
 
   return (
     <>
-      {/* ヘッダー */}
-      <header className="bg-gray-100 px-4 py-3 flex justify-end items-center gap-4 rounded-t-lg">
-        <Link
-          href="/login"
-          className="px-6 py-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition"
-        >
-          Login
-        </Link>
-        <Link
-          href="/signup"
-          className="px-6 py-2 rounded-full border border-gray-800 text-gray-800 bg-white hover:bg-gray-100 transition"
-        >
-          Sign Up
-        </Link>
-      </header>
+      <Header />
       {/* 詳細記事本体 */}
       <div className="max-w-4xl mx-auto p-5">
         <div className="bg-gray-50 rounded-lg p-6 shadow-sm">
