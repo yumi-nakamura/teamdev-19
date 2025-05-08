@@ -1,71 +1,91 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 // 記事フォームで扱うデータの型定義
 export interface ArticleFormData {
-  title: string; // 記事のタイトル
-  content: string; // 記事の本文内容
-  category_id: string; // カテゴリーID
-  image: File | null; // アップロードされた画像ファイル
+  title: string;
+  content: string;
+  category_id: number;
+  image: File | null;
+  image_path?: string;
 }
 
-// コンポーネントに渡されるプロパティの型定義
+// カテゴリーの定義
+const CATEGORIES = [
+  { id: 1, name: "Technology" },
+  { id: 2, name: "Business" },
+  { id: 3, name: "Health" },
+  { id: 4, name: "Arts" },
+];
+
 interface ArticleFormProps {
   onSubmit: (formData: ArticleFormData) => void;
+  initialData?: ArticleFormData;
+  isEditing?: boolean;
 }
 
-const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit }) => {
-  // フォームの状態を管理
+const ArticleForm: React.FC<ArticleFormProps> = ({
+  onSubmit,
+  initialData,
+  isEditing = false,
+}) => {
+  // フォームの状態を初期化
   const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
     content: "",
-    category_id: "",
+    category_id: 0,
     image: null,
   });
-
-  // 隠れた画像アップロード用の要素を操作するための参照
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // アップロードされた画像をプレビュー表示するためのデータを保存する変数
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  // 初期データの適用
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+      if (initialData.image_path) setImagePreview(initialData.image_path);
+    }
+  }, [initialData]);
 
-  // テキスト入力やセレクトボックスの値が変わったときに実行される関数
+  // 入力値の変更処理
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => {
     const { name, value } = e.target;
-    // 入力された値だけを更新し、他の入力内容はそのまま残す
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // カテゴリーIDは数値に変換
+    if (name === "category_id") {
+      setFormData((prev) => ({ ...prev, [name]: parseInt(value, 10) || 0 }));
+    } else {
+      // その他の入力はそのまま
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  // ユーザーが画像を選択したときに実行される関数
+  // 画像選択処理
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       const file = e.target.files[0];
-      // フォームデータに選択された画像ファイルを保存
-      setFormData((prev) => ({ ...prev, image: file }));
+      setFormData((prev) => ({ ...prev, image: file, image_path: undefined }));
 
       // 画像ファイルをブラウザで表示できる形式に変換してプレビューに使用
       const reader = new FileReader();
-      reader.onload = (event) => {
-        setImagePreview(event.target?.result as string);
-      };
+      reader.onload = (e) => setImagePreview(e.target?.result as string);
       reader.readAsDataURL(file);
     }
   };
 
   // フォーム送信ボタンがクリックされたときに実行される関数
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // ページのリロードを防止
-    onSubmit(formData); // 入力データを親コンポーネントに渡す
-  };
-
-  // 画像選択ダイアログを表示する関数
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
+    e.preventDefault();
+    if (formData.category_id === 0) {
+      alert("カテゴリーを選択してください");
+      return;
+    }
+    onSubmit(formData);
   };
 
   return (
@@ -89,14 +109,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit }) => {
         {/* 画像アップロード部分 */}
         <div className="mb-8">
           <div
-            onClick={triggerFileInput}
-            className={`
-              border-2 border-dashed border-gray-300 rounded-lg 
-              h-64 flex flex-col items-center justify-center
-              cursor-pointer
-              ${imagePreview ? "" : "hover:bg-gray-50"}
-            `}
-            // 画像がアップロードされていれば、その画像をバックグラウンドに表示
+            onClick={() => fileInputRef.current?.click()}
+            className={`border-2 border-dashed border-gray-300 rounded-lg h-64 flex flex-col items-center justify-center cursor-pointer ${imagePreview ? "" : "hover:bg-gray-50"}`}
             style={
               imagePreview
                 ? {
@@ -154,8 +168,12 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit }) => {
             className="border border-gray-300 rounded px-3 py-2 bg-white"
             required
           >
-            <option value="">Value</option>
-            <option value="1">Technology</option>
+            <option value="">選択してください</option>
+            {CATEGORIES.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -179,7 +197,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit }) => {
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded"
           >
-            Create
+            {isEditing ? "Update" : "Create"}
           </button>
         </div>
       </form>
