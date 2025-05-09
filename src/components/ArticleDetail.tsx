@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 "use client";
+=======
+import React from "react";
+import Link from "next/link";
+import { CommentSection } from "./CommentSection";
+import Header from "./Header";
+>>>>>>> 6755c6c57d510169ee2e7ddf8f3f5ae66fbfc059
 
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase";
@@ -65,6 +72,8 @@ export default function ArticleDetail({ id }: ArticleDetailProps) {
           <p>{article.content}</p>
         </div>
       </div>
-    </div>
+      {/* コメント欄 */}
+      <CommentSection />
+    </>
   );
 }
