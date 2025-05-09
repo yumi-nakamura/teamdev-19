@@ -27,7 +27,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit }) => {
   // 隠れた画像アップロード用の要素を操作するための参照
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // アップロードされた画像をプレビュー表示するためのデータを保存する変数
+  // 画像アップロード部分の状態はformData.imageで管理するため、imagePreviewのみ保持
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // テキスト入力やセレクトボックスの値が変わったときに実行される関数
@@ -60,6 +60,14 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit }) => {
   // フォーム送信ボタンがクリックされたときに実行される関数
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // ページのリロードを防止
+
+    if (!formData.image) {
+      alert("画像が選択されていません！");
+      return;
+    }
+
+    console.log("選択された画像ファイル:", formData.image);
+
     onSubmit(formData); // 入力データを親コンポーネントに渡す
   };
 
@@ -154,8 +162,10 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit }) => {
             className="border border-gray-300 rounded px-3 py-2 bg-white"
             required
           >
-            <option value="">Value</option>
+            <option value="">Select category</option>
             <option value="1">Technology</option>
+            <option value="2">Lifestyle</option>
+            <option value="3">Business</option>
           </select>
         </div>
 

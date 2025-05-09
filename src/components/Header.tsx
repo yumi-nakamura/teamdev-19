@@ -1,9 +1,9 @@
-'use client';
-import React from 'react';
-import UserMenu from './UserMenu';
+"use client";
+import React from "react";
+import UserMenu from "./UserMenu";
 
 const Header = () => {
-  const isLoggedIn = false
+  const isLoggedIn = false;
 
   return (
     <header className="w-full max-w-[2055px] mx-auto h-[120px] bg-[#D9D9D9] px-[30px] flex justify-end items-center">
