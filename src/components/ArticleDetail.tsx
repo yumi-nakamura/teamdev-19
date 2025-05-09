@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { CommentSection } from "./CommentSection";
 import Header from "./Header";
 
