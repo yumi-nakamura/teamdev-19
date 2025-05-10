@@ -3,6 +3,7 @@
 import React from "react";
 import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
 import { useRouter } from "next/navigation";
+import Header from "@/components/Header";
 
 export default function CreateArticlePage() {
   const router = useRouter();
@@ -20,5 +21,10 @@ export default function CreateArticlePage() {
     }
   };
 
-  return <ArticleForm onSubmit={handleSubmit} />;
+  return (
+    <div>
+      <Header />
+      <ArticleForm onSubmit={handleSubmit} />;
+    </div>
+  );
 }
