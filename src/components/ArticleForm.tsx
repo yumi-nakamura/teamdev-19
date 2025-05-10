@@ -22,14 +22,9 @@ const CATEGORIES = [
 interface ArticleFormProps {
   onSubmit: (formData: ArticleFormData) => void;
   initialData?: ArticleFormData;
-  isEditing?: boolean;
 }
 
-const ArticleForm: React.FC<ArticleFormProps> = ({
-  onSubmit,
-  initialData,
-  isEditing = false,
-}) => {
+const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
   // フォームの状態を初期化
   const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
@@ -197,7 +192,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded"
           >
-            {isEditing ? "Update" : "Create"}
+            Create
           </button>
         </div>
       </form>
