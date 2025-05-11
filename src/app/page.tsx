@@ -7,8 +7,20 @@ import Link from "next/link";
 import { SearchBar } from "../components/SearchBar";
 import { supabase } from "../lib/supabaseClient";
 
+type Post = {
+  post_id: string;
+  id: string;
+  user_id: string;
+  category_id: string;
+  title: string;
+  content: string;
+  image_path: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export default function Page() {
-  const [blogPosts, setBlogPosts] = useState<any[]>([]);
+  const [blogPosts, setBlogPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -19,7 +31,10 @@ export default function Page() {
       if (error) {
         console.error("データ取得エラー:", error);
       } else {
-        const sorted = (data || []).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        const sorted = (data || []).sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
         setBlogPosts(sorted);
       }
     };
@@ -59,7 +74,10 @@ export default function Page() {
         <main>
           <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
             {blogPosts.map((post, idx) => (
-              <PostCard key={post.id ?? post.post_id ?? idx} {...post} />
+              <PostCard
+                key={post.id || post.post_id || String(idx)}
+                {...post}
+              />
             ))}
           </div>
           <div style={{ padding: 20 }}>
