@@ -21,12 +21,16 @@ export const LoginForm = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
       <div className="w-full max-w-sm space-y-6">
-        <h2 className="text-center text-2xl font-bold text-gray-900">Sign In</h2>
+        <h2 className="text-center text-2xl font-bold text-gray-900">
+          Sign In
+        </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               {...register("email", {
                 required: "メールアドレスを入力してください",
@@ -40,13 +44,17 @@ export const LoginForm = () => {
               className="mt-1 w-full rounded-md border border-gray-400 bg-gray-200 px-3 py-2 placeholder-gray-600"
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+              <p className="mt-1 text-sm text-red-500">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               {...register("password", {
                 required: "パスワードを入力してください",
@@ -67,7 +75,9 @@ export const LoginForm = () => {
               className="mt-1 w-full rounded-md border border-gray-400 bg-gray-200 px-3 py-2 placeholder-gray-600"
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+              <p className="mt-1 text-sm text-red-500">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -81,7 +91,7 @@ export const LoginForm = () => {
         </form>
 
         <p className="mt-4 text-center text-sm text-black">
-          Don't have an account ?{" "}
+          Don&apos;t have an account?{" "}
           <a href="#" className="font-medium text-blue-500 hover:underline">
             Sign Up
           </a>
