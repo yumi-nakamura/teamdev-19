@@ -69,7 +69,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 mt-10">
+    <div className="max-w-4xl mx-auto px-4 py-6">
       <form onSubmit={handleSubmit}>
         {/* タイトル入力部分 */}
         <div className="mb-8">
