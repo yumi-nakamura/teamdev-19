@@ -2,12 +2,6 @@ import React from "react";
 import ArticleDetail from "@/components/ArticleDetail";
 import Header from "@/components/Header";
 
-interface ArticlePageProps {
-  params: {
-    id: string;
-  };
-}
-
 export default async function ArticlePage({
   params,
 }: {

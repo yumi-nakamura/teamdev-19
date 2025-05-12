@@ -91,7 +91,7 @@ export const LoginForm = () => {
         </form>
 
         <p className="mt-4 text-center text-sm text-black">
-          Don't have an account ?{" "}
+          Don&apos;t have an account?{" "}
           <a href="#" className="font-medium text-blue-500 hover:underline">
             Sign Up
           </a>
