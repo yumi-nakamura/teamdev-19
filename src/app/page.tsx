@@ -19,8 +19,14 @@ type Post = {
   updated_at: string;
 };
 
+type Category = {
+  id: string;
+  name: string;
+};
+
 export default function Page() {
   const [blogPosts, setBlogPosts] = useState<Post[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -38,7 +44,16 @@ export default function Page() {
         setBlogPosts(sorted);
       }
     };
+    const fetchCategories = async () => {
+      const { data, error } = await supabase.from("categories").select("*");
+      if (error) {
+        console.error("カテゴリ取得エラー:", error);
+      } else {
+        setCategories(data || []);
+      }
+    };
     fetchPosts();
+    fetchCategories();
   }, []);
 
   const handlePageChange = (page: number) => {
@@ -73,12 +88,18 @@ export default function Page() {
 
         <main>
           <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
-            {blogPosts.map((post, idx) => (
-              <PostCard
-                key={post.id || post.post_id || String(idx)}
-                {...post}
-              />
-            ))}
+            {blogPosts.map((post, idx) => {
+              const category = categories.find(
+                (cat) => String(cat.id) === String(post.category_id),
+              );
+              return (
+                <PostCard
+                  key={post.id || post.post_id || String(idx)}
+                  {...post}
+                  categoryName={category ? category.name : ""}
+                />
+              );
+            })}
           </div>
           <div style={{ padding: 20 }}>
             <Pagination totalPages={10} onPageChange={handlePageChange} />
