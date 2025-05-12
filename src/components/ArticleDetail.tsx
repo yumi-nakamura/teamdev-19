@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 import { CommentSection } from "./CommentSection";
-import Header from "./Header";
 import { supabase } from "@/utils/supabase";
 
 interface ArticleDetailProps {
@@ -76,8 +74,8 @@ export default function ArticleDetail({ id }: ArticleDetailProps) {
           <div className="text-base leading-relaxed">
             <p>{article.content}</p>
           </div>
+          <CommentSection />
         </div>
-        <CommentSection />
       </div>
     </div>
   );
