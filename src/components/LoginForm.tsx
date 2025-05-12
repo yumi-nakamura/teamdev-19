@@ -22,18 +22,14 @@ export const LoginForm = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
       <div className="w-full max-w-sm space-y-6">
         <h2 className="text-center text-2xl font-bold text-gray-900">
-          
           Sign In
-        
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              
               Email
-            
             </label>
             <input
               {...register("email", {
@@ -49,9 +45,7 @@ export const LoginForm = () => {
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-500">
-                
                 {errors.email.message}
-              
               </p>
             )}
           </div>
@@ -59,9 +53,7 @@ export const LoginForm = () => {
           {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              
               Password
-            
             </label>
             <input
               {...register("password", {
