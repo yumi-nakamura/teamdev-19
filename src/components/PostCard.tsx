@@ -1,27 +1,33 @@
 import Link from "next/link";
 import Image from "next/image";
+import { formatDistanceToNow } from "date-fns";
+import { ja } from "date-fns/locale";
 
 type PostCardProps = {
   post_id: string;
-  user_id: string;
   category_id: string;
   title: string;
   content: string;
   image_path: string;
   created_at: string;
-  updated_at: string;
+  categoryName?: string;
 };
 
 export default function PostCard({
   post_id,
-  user_id,
   category_id,
   title,
   content,
   image_path,
   created_at,
-  updated_at,
+  categoryName,
 }: PostCardProps) {
+  // 日付を「○分前」などに変換
+  const createdAtText = formatDistanceToNow(new Date(created_at), {
+    addSuffix: true,
+    locale: ja,
+  });
+
   return (
     <Link
       href={`/article/${post_id}`}
@@ -33,14 +39,24 @@ export default function PostCard({
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
-          <span className="text-sm text-blue-500">{category_id}</span>
+          <span className="text-sm text-blue-500">
+            {categoryName || category_id}
+          </span>
         </div>
         <div className="text-sm">
-          <span className="mr-2 text-blue-500">{user_id}</span>
-          <span className=" text-gray-500 mr-2">{updated_at}</span>
-          <span className=" text-gray-300">{created_at}</span>
+          <span className="mr-2 text-blue-500">Author</span>
+          <span className="text-gray-500 mr-2">{createdAtText}</span>
         </div>
-        <div className="text-base mt-3 text-gray-700">
+        <div
+          className="text-base mt-3 text-gray-700 line-clamp-2"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
           <span>{content}</span>
         </div>
       </div>
