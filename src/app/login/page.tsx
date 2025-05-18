@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/libs/supabaseClient";
-import { useAuth } from "@/libs/AuthContext"; // ← 追加
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -12,10 +11,7 @@ const LoginPage = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth(); // ← ログイン状態を取得
   const router = useRouter();
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -34,13 +30,13 @@ const LoginPage = () => {
         return;
       }
 
-      // 成功時メッセージを表示
       setSuccessMsg(`ログイン成功: ${sessionData.user?.email}`);
       console.log("Login successful:", sessionData.user);
 
       // 一覧ページへ遷移
       router.push("/list");
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error("ログインエラー:", err);
       setErrorMsg("エラーが発生しました");
       setLoading(false);
     }
