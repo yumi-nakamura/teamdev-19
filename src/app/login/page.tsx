@@ -1,21 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/libs/supabaseClient";
+import { useAuth } from "@/libs/AuthContext"; // ← 追加
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth(); // ← ログイン状態を取得
+  const router = useRouter();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // ここにログイン処理を実装
-    console.log("Login attempt with:", { email, password });
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    setLoading(true);
+
+    try {
+      const { error, data: sessionData } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      setLoading(false);
+
+      if (error) {
+        setErrorMsg(error.message);
+        return;
+      }
+
+      // 成功時メッセージを表示
+      setSuccessMsg(`ログイン成功: ${sessionData.user?.email}`);
+      console.log("Login successful:", sessionData.user);
+
+      // 一覧ページへ遷移
+      router.push("/list");
+    } catch (err) {
+      setErrorMsg("エラーが発生しました");
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* ナビゲーションバー */}
       <nav className="bg-gray-100 p-4">
         <div className="container mx-auto flex justify-end space-x-4">
           <Link
@@ -33,7 +65,6 @@ const LoginPage = () => {
         </div>
       </nav>
 
-      {/* メインコンテンツ */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
@@ -81,11 +112,19 @@ const LoginPage = () => {
 
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
+
+          {errorMsg && (
+            <p className="text-red-500 text-center mt-4">{errorMsg}</p>
+          )}
+          {successMsg && (
+            <p className="text-green-600 text-center mt-4">{successMsg}</p>
+          )}
 
           <div className="text-center mt-4">
             <span className="text-gray-600">Don&apos;t have an account? </span>
