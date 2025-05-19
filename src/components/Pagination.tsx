@@ -3,17 +3,23 @@ import React, { FC, useState } from "react";
 
 type Props = {
   totalPages: number;
-  onPageChange?: (page: number) => void;
+  pageSize: number; // 1ページあたりの記事数
+  onPageChange?: (page: number, startIndex: number, endIndex: number) => void;
 };
 
-const Pagination: FC<Props> = ({ totalPages, onPageChange }) => {
+const Pagination: FC<Props> = ({ totalPages, pageSize, onPageChange }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const goToPage = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
-    onPageChange?.(page);
+    
+    // 表示する記事の範囲を計算
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = Math.min(startIndex + pageSize - 1, totalPages * pageSize - 1);
+    
+    onPageChange?.(page, startIndex, endIndex);
   };
 
   const prevPage = () => goToPage(currentPage - 1);
