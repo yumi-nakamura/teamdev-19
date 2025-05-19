@@ -14,11 +14,14 @@ const Pagination: FC<Props> = ({ totalPages, pageSize, onPageChange }) => {
   const goToPage = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
-    
+
     // 表示する記事の範囲を計算
     const startIndex = (page - 1) * pageSize;
-    const endIndex = Math.min(startIndex + pageSize - 1, totalPages * pageSize - 1);
-    
+    const endIndex = Math.min(
+      startIndex + pageSize - 1,
+      totalPages * pageSize - 1,
+    );
+
     onPageChange?.(page, startIndex, endIndex);
   };
 
