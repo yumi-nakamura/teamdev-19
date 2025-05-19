@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-
 const nextConfig: NextConfig = {
   images: {
   remotePatterns: [
@@ -7,6 +6,10 @@ const nextConfig: NextConfig = {
   protocol: 'https',
   hostname: 'placehold.jp',
   },
+  {
+        protocol: 'https',
+        hostname: 'aoevtcajtrsagxxbwwwu.supabase.co', // ← Supabase ストレージドメインを追加
+      },
   ],
   },
   };
