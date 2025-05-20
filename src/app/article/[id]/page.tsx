@@ -13,7 +13,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const { data: post, error } = await supabase
     .from("posts")
-    .select("*")
+    .select("*, category:categories(name)")
     .eq("id", postId)
     .single();
 
@@ -34,6 +34,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const postWithUser = {
     ...post,
     user,
+    category: post.category, 
   };
 
   return (

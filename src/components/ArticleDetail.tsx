@@ -9,6 +9,11 @@ type User = {
   image_path: string | null;
 };
 
+type Category = {
+  id: number;
+  name: string;
+};
+
 type PostWithUser = {
   id: number;
   title: string;
@@ -16,6 +21,7 @@ type PostWithUser = {
   image_path: string | null;
   created_at: string;
   updated_at: string;
+  category: Category; 
   user_id: number;
   user: User;
 };
@@ -59,6 +65,14 @@ export const ArticleDetail = ({ post }: { post: PostWithUser }) => {
         </div>
       
       <div className="text-base leading-relaxed">
+        <div className="flex gap-4 text-sm text-gray-600  mb-3">
+            <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+              カテゴリ: {post.category?.name}
+            </span>
+            <span className="text-xs">
+              投稿日時: {new Date(post.created_at).toLocaleString()}
+            </span>
+          </div>
             <p>{post.content}</p>
           </div>
         </div>
