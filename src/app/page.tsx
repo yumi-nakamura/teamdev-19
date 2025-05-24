@@ -115,6 +115,7 @@ export default function Page() {
             <Pagination
               totalPages={totalPages}
               pageSize={pageSize}
+              currentPage={currentPage}
               onPageChange={handlePageChange}
             />
           </div>
