@@ -6,10 +6,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-function PcMenu({ user }: { user: SupabaseUser | null }) {
+function PcMenu({ user, signOut, router }: { user: SupabaseUser | null, signOut: () => Promise<void>, router: { push: (path: string) => void } }) {
   return (
     <div className="hidden min-[501px]:flex items-center">
-      {user ? <UserMenu user={user} signOut={() => Promise.resolve()} router={{ push: () => {} }} /> : (
+      {user ? <UserMenu user={user} signOut={signOut} router={router} /> : (
         <>
           <Link href="/login">
             <button type="button" className="w-[110px] h-[36px] bg-white text-black border border-black rounded-full text-[14px] font-bold px-2 py-1 mr-2">Login</button>
@@ -88,7 +88,7 @@ const Header = () => {
   };
   return (
     <header className="w-full max-w-[2055px] mx-auto h-[60px] bg-[#D9D9D9] px-[30px] flex justify-end items-center relative">
-      <PcMenu user={user} />
+      <PcMenu user={user} signOut={signOut} router={router} />
       <MobileMenu user={user} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} handleLogout={handleLogout} />
 
     </header>
