@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "../../libs/AuthContext";
 import { useRouter } from "next/navigation";
+import { withGuestOnly } from "@/libs/withAuth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -122,4 +123,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default withGuestOnly(LoginPage);
