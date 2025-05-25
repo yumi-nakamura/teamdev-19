@@ -7,9 +7,11 @@ import { supabase } from "@/utils/supabase";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
 import { withAuth } from "@/libs/withAuth";
+import { useAuth } from "@/libs/AuthContext";
 
 export default withAuth(function CreateArticlePage() {
   const router = useRouter();
+  const { user } = useAuth();
 
   const uploadImage = async (file: File): Promise<string | null> => {
     if (!file) {
@@ -85,6 +87,9 @@ export default withAuth(function CreateArticlePage() {
         title: formData.title,
         content: formData.content,
         category_id: formData.category_id,
+        user_id: user?.id,
+        user_email: user?.email,
+        user_avatar: user?.user_metadata?.avatar_url || null,
       };
 
       if (imagePath) {

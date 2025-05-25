@@ -4,10 +4,12 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
 import { withAuth } from "@/libs/withAuth";
+import { useAuth } from "@/libs/AuthContext";
 
 // 記事編集ページのコンポーネント
 export default withAuth(function EditArticlePage() {
   const router = useRouter();
+  const { user } = useAuth();
   const { id: articleId } = useParams() as { id: string };
   const [article, setArticle] = useState<ArticleFormData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,7 +66,9 @@ export default withAuth(function EditArticlePage() {
         content: data.content,
         category_id: data.category_id,
         image_path: imagePath,
-        // user_id は認証機能実装後に追加
+        user_id: user?.id,
+        user_email: user?.email,
+        user_avatar: user?.user_metadata?.avatar_url || null,
       };
 
       console.log("送信する更新データ:", updateData);
