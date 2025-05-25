@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabase";
 import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
+import { withAuth } from "@/libs/withAuth";
 
-export default function CreateArticlePage() {
+export default withAuth(function CreateArticlePage() {
   const router = useRouter();
 
   const uploadImage = async (file: File): Promise<string | null> => {
@@ -143,4 +144,4 @@ export default function CreateArticlePage() {
       <ArticleForm onSubmit={handleSubmit} />;
     </div>
   );
-}
+});

@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
+import { withAuth } from "@/libs/withAuth";
 
 // 記事編集ページのコンポーネント
-export default function EditArticlePage() {
+export default withAuth(function EditArticlePage() {
   const router = useRouter();
   const { id: articleId } = useParams() as { id: string };
   const [article, setArticle] = useState<ArticleFormData | null>(null);
@@ -106,4 +107,4 @@ export default function EditArticlePage() {
       </div>
     </>
   );
-}
+});

@@ -5,8 +5,9 @@ import Link from "next/link";
 import Pagination from "../../components/Pagination";
 import PostCard from "../../components/PostCard";
 import "../globals.css";
+import { withAuth } from "@/libs/withAuth";
 
-export default function Profile() {
+export default withAuth(function Profile() {
   const blogPosts = [
     {
       post_id: "1",
@@ -80,4 +81,4 @@ export default function Profile() {
       </div>
     </>
   );
-}
+});
