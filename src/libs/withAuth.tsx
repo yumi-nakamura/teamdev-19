@@ -4,6 +4,14 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
 
+function LoadingSpinner() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+    </div>
+  );
+}
+
 export function withAuth<P extends object>(
   WrappedComponent: React.ComponentType<P>
 ) {
@@ -13,16 +21,12 @@ export function withAuth<P extends object>(
 
     useEffect(() => {
       if (!loading && !user) {
-        router.push("/login");
+        router.replace("/login");
       }
     }, [loading, user, router]);
 
     if (loading) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-        </div>
-      );
+      return <LoadingSpinner />;
     }
 
     if (!user) {
@@ -42,16 +46,12 @@ export function withGuestOnly<P extends object>(
 
     useEffect(() => {
       if (!loading && user) {
-        router.push("/");
+        router.replace("/");
       }
     }, [loading, user, router]);
 
     if (loading) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-        </div>
-      );
+      return <LoadingSpinner />;
     }
 
     if (user) {

@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useAuth } from "@/libs/AuthContext";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-const UserMenu = () => {
-  const { user, signOut } = useAuth();
-  const router = useRouter();
+interface UserMenuProps {
+  user: SupabaseUser;
+  signOut: () => Promise<void>;
+  router: { push: (path: string) => void };
+}
+
+const UserMenu = ({ user, signOut, router }: UserMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
