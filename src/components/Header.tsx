@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/libs/AuthContext";
 import { useRouter } from "next/navigation";
@@ -8,6 +8,25 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // モーダル外クリックで閉じる
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    }
+    if (isProfileOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isProfileOpen]);
 
   const handleLogout = async () => {
     await signOut();
@@ -29,17 +48,35 @@ const Header = () => {
                 Create
               </button>
             </Link>
-            <button className="w-[40px] h-[40px] bg-[#bababa] rounded-full flex items-center justify-center">
-              <div
-                className="w-[20px] h-[23px] bg-[#151515]"
-                style={{
-                  mask: "url('/icons/user-icon.svg') no-repeat center",
-                  WebkitMask: "url('/icons/user-icon.svg') no-repeat center",
-                  maskSize: "contain",
-                  WebkitMaskSize: "contain",
-                }}
-              />
-            </button>
+            <div className="relative" ref={profileRef}>
+              <button
+                className="w-[40px] h-[40px] bg-[#bababa] rounded-full flex items-center justify-center"
+                onClick={() => setIsProfileOpen((prev) => !prev)}
+              >
+                <div
+                  className="w-[20px] h-[23px] bg-[#151515]"
+                  style={{
+                    mask: "url('/icons/user-icon.svg') no-repeat center",
+                    WebkitMask: "url('/icons/user-icon.svg') no-repeat center",
+                    maskSize: "contain",
+                    WebkitMaskSize: "contain",
+                  }}
+                />
+              </button>
+              {isProfileOpen && (
+                <div className="absolute top-12 right-0 w-48 bg-gray-300 rounded-lg shadow-lg z-50 flex flex-col items-center py-4">
+                  <div className="px-4 py-2 text-gray-800 text-sm font-bold mb-2">
+                    {user.name || "User name"}
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-32 px-4 py-2 text-sm text-white bg-red-400 hover:bg-red-500 rounded-full font-bold"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <>
