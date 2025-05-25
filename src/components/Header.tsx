@@ -90,7 +90,7 @@ const Header = () => {
     <header className="w-full max-w-[2055px] mx-auto h-[60px] bg-[#D9D9D9] px-[30px] flex justify-end items-center relative">
       <PcMenu user={user} />
       <MobileMenu user={user} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} handleLogout={handleLogout} />
-      {user && <UserMenu user={user} signOut={signOut} router={router} />}
+
     </header>
   );
 };
