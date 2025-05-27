@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
@@ -24,9 +24,9 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
 
   useEffect(() => {
-    let subscription: { unsubscribe: () => void } | null = null;
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
@@ -34,10 +34,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { data } = supabase.auth.onAuthStateChange((_event, session) => {
         setUser(session?.user ?? null);
       });
-      subscription = data.subscription;
+      subscriptionRef.current = data.subscription;
     })();
     return () => {
-      if (subscription) subscription.unsubscribe();
+      if (subscriptionRef.current) subscriptionRef.current.unsubscribe();
     };
   }, []);
 
