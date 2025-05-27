@@ -2,25 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { CommentSection } from "./CommentSection";
 import { supabase } from "@/utils/supabase";
-import Image from "next/image";
 
-interface Article {
-  id: number;
-  title: string;
-  content: string;
-  image_path?: string;
-  created_at: string;
-  categories?: {
-    name?: string;
-  };
-}
 
 interface ArticleDetailProps {
   id: string;
 }
 
 export default function ArticleDetail({ id }: ArticleDetailProps) {
-  const [article, setArticle] = useState<Article | null>(null);
+  const [article, setArticle] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -67,11 +56,9 @@ export default function ArticleDetail({ id }: ArticleDetailProps) {
 
           <div className="mb-4 flex justify-center">
             {article.image_path ? (
-              <Image
+              <img
                 src={article.image_path}
                 alt="投稿画像"
-                width={680}
-                height={340}
                 className="w-170 h-85 object-cover rounded"
               />
             ) : (

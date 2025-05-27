@@ -78,6 +78,7 @@ function MobileMenu({ user, isMenuOpen, setIsMenuOpen, handleLogout }: { user: S
   );
 }
 
+
 const Header = () => {
   const { user, signOut } = useAuth();
   const router = useRouter();
