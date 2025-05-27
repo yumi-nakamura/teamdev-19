@@ -7,6 +7,7 @@ import PostCard from "../../components/PostCard";
 import "../globals.css";
 import { withAuth } from "@/libs/withAuth";
 
+
 export default withAuth(function Profile() {
   const blogPosts = [
     {

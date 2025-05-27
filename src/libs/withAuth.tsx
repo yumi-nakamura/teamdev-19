@@ -12,6 +12,7 @@ function LoadingSpinner() {
   );
 }
 
+
 export function withAuth<P extends object>(
   WrappedComponent: React.ComponentType<P>
 ) {

@@ -2,6 +2,7 @@ import React from "react";
 import ArticleDetail from "@/components/ArticleDetail";
 import Header from "@/components/Header";
 
+
 export default async function ArticlePage({
   params,
 }: {

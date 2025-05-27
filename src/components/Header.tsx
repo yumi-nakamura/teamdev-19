@@ -23,6 +23,7 @@ function PcMenu({ user, signOut, router }: { user: SupabaseUser | null, signOut:
   );
 }
 
+
 function MobileMenu({ user, isMenuOpen, setIsMenuOpen, handleLogout }: { user: SupabaseUser | null, isMenuOpen: boolean, setIsMenuOpen: (v: boolean) => void, handleLogout: () => void }) {
   return (
     <>

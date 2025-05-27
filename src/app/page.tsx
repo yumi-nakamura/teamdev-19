@@ -7,6 +7,7 @@ import { SearchBar } from "../components/SearchBar";
 import { supabase } from "../lib/supabaseClient";
 import Header from "../components/Header";
 
+
 type Post = {
   post_id: string;
   id: string;
