@@ -1,23 +1,19 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
+import { withAuth } from "@/libs/withAuth";
+import { useAuth } from "@/libs/AuthContext";
+import Header from "@/components/Header";
 
 // 記事編集ページのコンポーネント
-export default function EditArticlePage() {
+export default withAuth(function EditArticlePage() {
   const router = useRouter();
+  const { user } = useAuth();
   const { id: articleId } = useParams() as { id: string };
   const [article, setArticle] = useState<ArticleFormData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // フォーム送信と同じ機能のヘッダーボタン
-  const handleCreateClick = () => {
-    if (article) {
-      handleSubmit(article);
-    }
-  };
 
   // 記事データの取得
   useEffect(() => {
@@ -63,7 +59,9 @@ export default function EditArticlePage() {
         content: data.content,
         category_id: data.category_id,
         image_path: imagePath,
-        // user_id は認証機能実装後に追加
+        user_id: user?.id,
+        user_email: user?.email,
+        user_avatar: user?.user_metadata?.avatar_url || null,
       };
 
       console.log("送信する更新データ:", updateData);
@@ -78,18 +76,7 @@ export default function EditArticlePage() {
 
   return (
     <>
-      {/* カスタムヘッダー */}
-      <header className="w-full max-w-[2055px] mx-auto h-[60px] bg-[#D9D9D9] px-[30px] flex justify-end items-center">
-        <div className="flex items-center">
-          <button
-            type="button"
-            onClick={handleCreateClick}
-            className="w-[110px] h-[36px] bg-[#383838] text-[#ffffff] rounded-full text-[14px] font-bold flex items-center justify-center px-2 py-1"
-          >
-            Create
-          </button>
-        </div>
-      </header>
+      <Header />
 
       <div className="max-w-4xl mx-auto p-4">
         {loading && <p className="text-center py-8">読み込み中...</p>}
@@ -106,4 +93,4 @@ export default function EditArticlePage() {
       </div>
     </>
   );
-}
+});

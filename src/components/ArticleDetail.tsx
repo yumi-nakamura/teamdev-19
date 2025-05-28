@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { CommentSection } from "./CommentSection";
 import { supabase } from "@/utils/supabase";
 
+
 interface ArticleDetailProps {
   id: string;
 }
