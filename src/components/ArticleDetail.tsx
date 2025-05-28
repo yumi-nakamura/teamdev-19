@@ -7,8 +7,7 @@ export const ArticleDetail = ({ postId }: { postId: number }) => {
   const article = {
     id: postId,
     title: "Blog Title",
-    content:
-      "ダミーテキストです。ここには記事の内容を表示する予定です。",
+    content: "ダミーテキストです。ここには記事の内容を表示する予定です。",
   };
 
   return (

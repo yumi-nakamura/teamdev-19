@@ -13,39 +13,38 @@ interface Comment {
   updated_at: Date;
 }
 
-  export const CommentSection = ({ postId }: { postId: number }) => {
+export const CommentSection = ({ postId }: { postId: number }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
   useEffect(() => {
     console.log("postId", postId);
-  const getComments = async () => {
-    const data = await fetchCommentsByPostId(postId);
-    setComments(data);
-  };
+    const getComments = async () => {
+      const data = await fetchCommentsByPostId(postId);
+      setComments(data);
+    };
 
-   getComments();
+    getComments();
   }, [postId]);
   const handleAddComment = async () => {
-  const { data, error } = await supabase
-    .from("comments")
-    .insert([
-      {
-        user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad",
-        post_id: postId,
-        content: commentText,
-      }
-    ])
-    .select();
+    const { data, error } = await supabase
+      .from("comments")
+      .insert([
+        {
+          user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad",
+          post_id: postId,
+          content: commentText,
+        },
+      ])
+      .select();
 
-  if (error) {
-    console.error("❌ 投稿失敗:", error);
-    return;
-  }
+    if (error) {
+      console.error("❌ 投稿失敗:", error);
+      return;
+    }
 
-  setComments((prev) => [...prev, ...data]);
-  setCommentText(""); // ← ここを追加してUX向上
-};
-
+    setComments((prev) => [...prev, ...data]);
+    setCommentText(""); // ← ここを追加してUX向上
+  };
 
   return (
     <section className="max-w-[771px] mx-auto mt-8 p-4">
