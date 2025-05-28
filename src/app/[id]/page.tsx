@@ -1,83 +1,94 @@
 "use client";
-import React from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import Pagination from "../components/Pagination";
+import PostCard from "../components/PostCard";
 import Link from "next/link";
-import Pagination from "../../components/Pagination";
-import PostCard from "../../components/PostCard";
-import "../globals.css";
+import { SearchBar } from "../components/SearchBar";
+import { supabase } from "../lib/supabaseClient";
+import "./globals.css";
 
-export default function Profile() {
-  const blogPosts = [
-    {
-      post_id: "1",
-      title: "ブログタイトル",
-      user_id: "Name",
-      category_id: "category",
-      created_at: "2025-00-00",
-      updated_at: "2025-00-00",
-      content:
-        "ブログの冒頭部分ブログの冒頭部分ブログの冒頭部分ブログの冒頭部分…",
-      image_path: "/sample-thumbnail.jpg",
-    },
-  ];
+// 型定義（リレーション対応）
+type Post = {
+id: number;
+title: string;
+content: string;
+image_path: string;
+created_at: string;
+categories: {
+name: string;
+} | null;
+};
 
-  const handlePageChange = (page: number) => {
-    console.log("選択されたページ:", page);
-    // ここで API を叩いてデータ再取得、スクロールトップするなどの処理
-  };
+export default function Page() {
+const [blogPosts, setBlogPosts] = useState<Post[]>([]);
 
-  return (
-    <>
-      <div className="bg-gray-50 text-gray-900">
-        <header className="bg-white px-4 py-3">
-          <div className="w-full px-4 flex justify-end items-center">
-            <nav className="relative group flex space-x-4 items-center">
-              <Link
-                href="/Create"
-                className="w-24 text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-6"
-              >
-                Create
-              </Link>
-              <Image
-                src="https://placehold.jp/50x50.png"
-                alt="User profile picture"
-                className="rounded-full"
-                width={50}
-                height={50}
-              />
-              <div className="absolute top-full right-0 mt-2 w-33 bg-gray-300 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                <div className="px-4 py-2 mt-1.5 text-gray-800 flex justify-center text-sm font-bold">
-                  User Name
-                </div>
-                <div className="flex justify-center">
-                  <button className="w-24 px-4 py-1.5 mb-3 text-sm text-white bg-red-400 hover:bg-red-500 rounded-full font-bold">
-                    Logout
-                  </button>
-                </div>
-              </div>
-            </nav>
-          </div>
-        </header>
+useEffect(() => {
+const fetchPosts = async () => {
+const { data, error } = await supabase
+.from("posts")
+.select("id, title, content, image_path, created_at, categories(name)")
+.returns<Post[]>() // ← ★ ここが型解決のポイント！
 
-        <main>
-          <h1 className="max-w-6xl text-center mt-10 text-4xl font-bold text-gray-500">
-            Your Post
-          </h1>
-          <div className="max-w-6xl mx-auto flex flex-wrap gap-15 m-15">
-            {Array(6)
-              .fill(null)
-              .map((_, index) => (
-                <PostCard key={index} {...blogPosts[0]} />
-              ))}
-          </div>
-          <div style={{ padding: 20 }}>
-            <Pagination totalPages={10} onPageChange={handlePageChange} />
-          </div>
-        </main>
-        <footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} TeamDev19. All rights reserved.
-        </footer>
-      </div>
-    </>
-  );
+if (error) {
+console.error("❌ 投稿取得エラー:", error);
+return;
+}
+
+setBlogPosts(data ?? []);
+};
+
+fetchPosts();
+}, []);
+const handlePageChange = (page: number) => {
+console.log("選択されたページ:", page);
+};
+
+return (
+<div className="bg-gray-50 text-gray-900">
+<header className="bg-white px-4 py-3">
+<div className="max-w-5xl mx-auto flex justify-between items-center">
+<h1 className="text-xl font-bold text-gray-900">BlogTitle</h1>
+<nav className="space-x-4 text-sm">
+<Link
+href="/login"
+className="text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
+>
+Login
+</Link>
+<Link
+href="/signup"
+className="text-gray-700 bg-white hover:bg-gray-100 border border-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
+>
+Sign Up
+</Link>
+</nav>
+</div>
+</header>
+
+<SearchBar />
+
+<main>
+<div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
+{blogPosts.map((post) => (
+<PostCard
+key={post.id}
+post_id={post.id}
+title={post.title}
+content={post.content}
+image_path={post.image_path}
+created_at={post.created_at}
+categoryName={post.categories?.name || ""}
+/>
+))}
+</div>
+<div style={{ padding: 20 }}>
+<Pagination totalPages={10} onPageChange={handlePageChange} />
+</div>
+</main>
+
+<footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">
+© {new Date().getFullYear()} TeamDev19. All rights reserved.
+</footer>
+</div>
+);
 }

@@ -4,25 +4,22 @@ import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
 
 type PostCardProps = {
-  post_id: string;
-  category_id: string;
+  post_id: number;
   title: string;
   content: string;
   image_path: string;
   created_at: string;
-  categoryName?: string;
+  categoryName: string; // ← リレーションで取得するので必須にしても良い
 };
 
 export default function PostCard({
   post_id,
-  category_id,
   title,
   content,
   image_path,
   created_at,
   categoryName,
 }: PostCardProps) {
-  // 日付を「○分前」などに変換
   const createdAtText = formatDistanceToNow(new Date(created_at), {
     addSuffix: true,
     locale: ja,
@@ -34,14 +31,14 @@ export default function PostCard({
       className="block bg-white rounded-lg w-75 overflow-hidden shadow-md hover:shadow-lg transition"
     >
       <div className="relative w-full h-48">
-        <Image src={image_path} alt={title} fill className="object-cover" />
+        {image_path && (
+          <Image src={image_path} alt={title} fill className="object-cover" />
+        )}
       </div>
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
-          <span className="text-sm text-blue-500">
-            {categoryName || category_id}
-          </span>
+          <span className="text-sm text-blue-500">{categoryName}</span>
         </div>
         <div className="text-sm">
           <span className="mr-2 text-blue-500">Author</span>

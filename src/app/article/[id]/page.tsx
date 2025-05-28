@@ -1,3 +1,4 @@
+// app/article/[id]/page.tsx
 import React from "react";
 import ArticleDetail from "@/components/ArticleDetail";
 
@@ -8,13 +9,16 @@ interface ArticlePageProps {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const { id } = await params;
-  //npm run lint実行時にエラーが出るので、console.logを追加
-  console.log(id);
+  const id = Number(params.id);
+
+  if (isNaN(id)) {
+    console.error("❌ 無効な記事ID:", params.id);
+    return <div>記事IDが不正です。</div>;
+  }
 
   return (
     <main>
-      <ArticleDetail />
+      <ArticleDetail postId={id} />
     </main>
   );
 }

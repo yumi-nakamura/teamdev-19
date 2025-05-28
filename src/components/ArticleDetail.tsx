@@ -2,19 +2,18 @@ import React from "react";
 import { CommentSection } from "./CommentSection";
 import Header from "./Header";
 
-export const ArticleDetail = () => {
-  // ダミーデータ
+export const ArticleDetail = ({ postId }: { postId: number }) => {
+  // 仮のダミーデータ（実際は Supabase から取得する）
   const article = {
-    id: 1,
+    id: postId,
     title: "Blog Title",
     content:
-      "ダミーテキストです。ここには記事の内容を表示する予定です ダミーテキストです。ここには記事の内容を表示する予定ですダミーテキストです。ここには記事の内容を表示する予定です",
+      "ダミーテキストです。ここには記事の内容を表示する予定です。",
   };
 
   return (
     <>
       <Header />
-      {/* 詳細記事本体 */}
       <div className="max-w-4xl mx-auto p-5">
         <div className="bg-gray-50 rounded-lg p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
@@ -33,8 +32,9 @@ export const ArticleDetail = () => {
           </div>
         </div>
       </div>
+
       {/* コメント欄 */}
-      <CommentSection />
+      <CommentSection postId={article.id} />
     </>
   );
 };
