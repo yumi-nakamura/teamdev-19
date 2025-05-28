@@ -17,6 +17,7 @@ type Post = {
   image_path: string;
   created_at: string;
   updated_at: string;
+  category?: Category;
 };
 
 type Category = {
@@ -36,7 +37,7 @@ export default function Page() {
     const fetchPosts = async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("*")
+        .select("*, category:categories(*)")
         .order("created_at", { ascending: false });
       if (error) {
         console.error("データ取得エラー:", error);
@@ -48,16 +49,7 @@ export default function Page() {
         setBlogPosts(sorted);
       }
     };
-    const fetchCategories = async () => {
-      const { data, error } = await supabase.from("categories").select("*");
-      if (error) {
-        console.error("カテゴリ取得エラー:", error);
-      } else {
-        setCategories(data || []);
-      }
-    };
     fetchPosts();
-    fetchCategories();
   }, []);
 
   // ページ変更時
@@ -98,18 +90,14 @@ export default function Page() {
 
         <main>
           <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
-            {displayedPosts.map((post, idx) => {
-              const category = categories.find(
-                (cat) => String(cat.id) === String(post.category_id),
-              );
-              return (
-                <PostCard
-                  key={post.id || post.post_id || String(idx)}
-                  {...post}
-                  categoryName={category ? category.name : ""}
-                />
-              );
-            })}
+            {displayedPosts.map((post, idx) => (
+              <PostCard
+                key={post.id}
+                {...post}
+                post_id={post.id}
+                categoryName={post.category ? post.category.name : ""}
+              />
+            ))}
           </div>
           <div style={{ padding: 20 }}>
             <Pagination
