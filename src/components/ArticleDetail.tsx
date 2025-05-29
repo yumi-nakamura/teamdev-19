@@ -2,10 +2,10 @@ import React from "react";
 import { CommentSection } from "./CommentSection";
 import Header from "./Header";
 
-export const ArticleDetail = () => {
+export default function ArticleDetail({ articleId }: { articleId: string }) {
   // ダミーデータ
   const article = {
-    id: 1,
+    id: articleId,
     title: "Blog Title",
     content:
       "ダミーテキストです。ここには記事の内容を表示する予定です ダミーテキストです。ここには記事の内容を表示する予定ですダミーテキストです。ここには記事の内容を表示する予定です",
@@ -34,9 +34,7 @@ export const ArticleDetail = () => {
         </div>
       </div>
       {/* コメント欄 */}
-      <CommentSection />
+      <CommentSection postId={article.id} />
     </>
   );
-};
-
-export default ArticleDetail;
+}
