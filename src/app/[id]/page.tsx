@@ -1,95 +1,115 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Pagination from "../components/Pagination";
-import PostCard from "../components/PostCard";
 import Link from "next/link";
-import { SearchBar } from "../components/SearchBar";
-import { supabase } from "../lib/supabaseClient";
-import "./globals.css";
+import Pagination from "../../components/Pagination";
+import PostCard from "../../components/PostCard";
+import { SearchBar } from "../../components/SearchBar";
+import { supabase } from "../../lib/supabaseClient";
+import Header from "../../components/Header";
+import { withAuth } from "../../libs/withAuth";
+import "../globals.css";
 
-// 型定義（リレーション対応）
-type Post = {
-  id: number;
-  title: string;
-  content: string;
-  image_path: string;
-  created_at: string;
-  categories: {
-    name: string;
-  } | null;
+// 型定義
+type Category = {
+name: string;
 };
 
-export default function Page() {
-  const [blogPosts, setBlogPosts] = useState<Post[]>([]);
+type Post = {
+id: number;
+title: string;
+content: string;
+image_path: string;
+created_at: string;
+categories: Category | null;
+};
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const { data, error } = await supabase
-        .from("posts")
-        .select("id, title, content, image_path, created_at, categories(name)")
-        .returns<Post[]>(); //
+function ProfilePage() {
+const [blogPosts, setBlogPosts] = useState<Post[]>([]);
+const [currentPage, setCurrentPage] = useState(1);
+const pageSize = 9;
 
-      if (error) {
-        console.error("❌ 投稿取得エラー:", error);
-        return;
-      }
-      const typeData = data as Post[];
-      // 型アサーションを使用してデータの型を明示的に指定
-      setBlogPosts(data ?? []); //保険
-    };
+useEffect(() => {
+const fetchPosts = async () => {
+const { data, error } = await supabase
+.from("posts")
+.select("id, title, content, image_path, created_at, categories(name)")
+.returns<Post[]>(); // 
 
-    fetchPosts();
-  }, []);
-  const handlePageChange = (page: number) => {
-    console.log("選択されたページ:", page);
-  };
-
-  return (
-    <div className="bg-gray-50 text-gray-900">
-      <header className="bg-white px-4 py-3">
-        <div className="max-w-5xl mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-900">BlogTitle</h1>
-          <nav className="space-x-4 text-sm">
-            <Link
-              href="/login"
-              className="text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="text-gray-700 bg-white hover:bg-gray-100 border border-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
-            >
-              Sign Up
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      <SearchBar />
-
-      <main>
-        <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
-          {blogPosts.map((post) => (
-            <PostCard
-              key={post.id}
-              post_id={post.id}
-              title={post.title}
-              content={post.content}
-              image_path={post.image_path}
-              created_at={post.created_at}
-              categoryName={post.categories?.name || ""}
-            />
-          ))}
-        </div>
-        <div style={{ padding: 20 }}>
-          <Pagination totalPages={10} onPageChange={handlePageChange} />
-        </div>
-      </main>
-
-      <footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} TeamDev19. All rights reserved.
-      </footer>
-    </div>
-  );
+if (error) {
+console.error("❌ 投稿取得エラー:", error);
+return;
 }
+
+setBlogPosts(data ?? []); // 
+};
+
+fetchPosts();
+}, []);
+
+const totalPages = Math.ceil(blogPosts.length / pageSize);
+
+const handlePageChange = (page: number) => {
+console.log("選択されたページ:", page);
+setCurrentPage(page);
+};
+
+const startIndex = (currentPage - 1) * pageSize;
+const endIndex = startIndex + pageSize;
+const displayedPosts = blogPosts.slice(startIndex, endIndex);
+
+return (
+<>
+<Header />
+<div className="bg-gray-50 text-gray-900">
+<SearchBar />
+<main>
+<h1 className="max-w-6xl text-center mt-10 text-4xl font-bold text-gray-500">
+Your Post
+</h1>
+<div className="max-w-6xl mx-auto flex flex-wrap gap-16 m-16 justify-center">
+{displayedPosts.length > 0 ? (
+displayedPosts.map((post) => (
+<PostCard
+key={post.id}
+post_id={post.id}
+title={post.title}
+content={post.content}
+image_path={post.image_path}
+created_at={post.created_at}
+categoryName={post.categories?.name || ""}
+/>
+))
+) : (
+Array(6)
+.fill(null)
+.map((_, index) => (
+<PostCard
+key={index}
+post_id={-1 * (index +1)}//ダミーデータなので負の数のNumber型でpost_id　コメント取得の為‐で逃がしました　後程修正
+title="ブログタイトル"
+content="ブログの冒頭部分…"
+image_path="/sample-thumbnail.jpg"
+created_at="2025-00-00"
+categoryName="カテゴリ"
+/>
+))
+)}
+</div>
+<div style={{ padding: 20 }}>
+<Pagination
+totalPages={totalPages}
+pageSize={pageSize}
+currentPage={currentPage}
+onPageChange={handlePageChange}
+/>
+</div>
+</main>
+<footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">
+© {new Date().getFullYear()} TeamDev19. All rights reserved.
+</footer>
+</div>
+</>
+);
+}
+
+export default withAuth

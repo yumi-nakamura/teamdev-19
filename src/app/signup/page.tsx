@@ -1,5 +1,6 @@
+"use client";
 import SignUpForm from "@/components/SignUpForm";
+import { withGuestOnly } from "@/libs/withAuth";
 
-export default function SignUp() {
-  return <SignUpForm />;
-}
+export default withGuestOnly(SignUpForm);
+

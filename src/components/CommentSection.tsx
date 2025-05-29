@@ -30,7 +30,7 @@ export const CommentSection = ({ postId }: { postId: number }) => {
       .from("comments")
       .insert([
         {
-          user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad",
+          user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad",//認証前の仮IDです。変更します　
           post_id: postId,
           content: commentText,
         },

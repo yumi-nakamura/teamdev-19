@@ -1,16 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "../../libs/AuthContext";
+import { useRouter } from "next/navigation";
+import { withGuestOnly } from "@/libs/withAuth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const { signIn } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // ここにログイン処理を実装
-    console.log("Login attempt with:", { email, password });
+    setError(null);
+
+    try {
+      const { error, user } = await signIn(email, password);
+      if (error) {
+        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
+        return;
+      }
+      if (user) {
+        router.push("/");
+      }
+    } catch (err) {
+      setError("ログイン中にエラーが発生しました。");
+      console.error("Login error:", err);
+    }
   };
 
   return (
@@ -39,6 +58,11 @@ const LoginPage = () => {
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-8">Sign In</h1>
           </div>
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+              {error}
+            </div>
+          )}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-6">
               <div>
@@ -87,6 +111,12 @@ const LoginPage = () => {
             </button>
           </form>
 
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+              {error}
+            </div>
+          )}
+
           <div className="text-center mt-4">
             <span className="text-gray-600">Don&apos;t have an account? </span>
             <Link href="/signup" className="text-blue-500 hover:underline">
@@ -99,4 +129,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default withGuestOnly(LoginPage);
