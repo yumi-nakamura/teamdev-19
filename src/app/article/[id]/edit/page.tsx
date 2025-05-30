@@ -5,6 +5,8 @@ import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
 import { withAuth } from "@/libs/withAuth";
 import { useAuth } from "@/libs/AuthContext";
 import Header from "@/components/Header";
+import ArticleDeleteButton from "@/components/ArticleDelete";
+import { supabase } from "@/lib/supabaseClient";
 
 // 記事編集ページのコンポーネント
 export default withAuth(function EditArticlePage() {
@@ -21,6 +23,19 @@ export default withAuth(function EditArticlePage() {
       try {
         setLoading(true);
 
+        // 実際のデータベースから記事データを取得
+        const { data, error } = await supabase
+          .from("posts")
+          .select(
+            "id, title, content, category_id, image_path, user_id, created_at",
+          )
+          .eq("id", articleId)
+          .single();
+
+        if (error || !data) {
+          setError("記事が見つかりませんでした。");
+          return;
+        }
         // ダミーデータ（将来的にAPIから取得）
         const dummyArticle: ArticleFormData = {
           title: "サンプル記事タイトル",
@@ -29,6 +44,7 @@ export default withAuth(function EditArticlePage() {
           category_id: 1,
           image: null,
           image_path: "/images/sample-image.jpg",
+          user_id: data.user_id,
         };
 
         setArticle(dummyArticle);
@@ -88,7 +104,17 @@ export default withAuth(function EditArticlePage() {
         )}
 
         {!loading && !error && article && (
-          <ArticleForm onSubmit={handleSubmit} initialData={article} />
+          <ArticleForm
+            onSubmit={handleSubmit}
+            initialData={article}
+            deleteButton={
+              <ArticleDeleteButton
+                articleId={articleId}
+                ownerId={article.user_id ?? ""}
+                currentUserId={user?.id}
+              />
+            }
+          />
         )}
       </div>
     </>
