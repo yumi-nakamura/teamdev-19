@@ -34,7 +34,11 @@ export default withAuth(function EditArticlePage() {
         throw error;
       }
 
-      if (data) {
+       if (data.user_id !== user?.id) {
+          setError("この投稿を編集する権限がありません。");
+          return;
+        }
+
         const fetchedArticle: ArticleFormData = {
           title: data.title,
           content: data.content,
@@ -42,8 +46,8 @@ export default withAuth(function EditArticlePage() {
           image: null,
           image_path: data.image_path || "",
         };
+
         setArticle(fetchedArticle);
-        } 
       }catch (err) {
         console.error("記事データの取得エラー:", err);
         setError("記事データの取得に失敗しました。");
@@ -52,8 +56,10 @@ export default withAuth(function EditArticlePage() {
       }
     }
 
-        if (articleId) fetchArticle();
-    }, [articleId]);
+      if (articleId && user) {
+        fetchArticle();
+      }
+    }, [articleId,user]);
 
     //※記事投稿に合わせる
       function getJSTDate(): Date {
@@ -82,9 +88,6 @@ export default withAuth(function EditArticlePage() {
         category_id: data.category_id,
         image_path: imagePath,
         updated_at:  getJSTDate(),
-        user_id: user?.id,
-        user_email: user?.email,
-        user_avatar: user?.user_metadata?.avatar_url || null,
       };
 
       const { error } = await supabase
