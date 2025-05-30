@@ -6,8 +6,8 @@ import PostCard from "../../components/PostCard";
 import { SearchBar } from "../../components/SearchBar";
 import { supabase } from "../../lib/supabaseClient";
 import Header from "../../components/Header";
-import { withAuth } from "../../libs/withAuth";
 import "../globals.css";
+import { withAuth } from "@/libs/withAuth";//認証追加後に機能させる、今後の実装を見据えて置いてます。
 
 // 型定義
 type Category = {
@@ -23,7 +23,7 @@ created_at: string;
 categories: Category | null;
 };
 
-function ProfilePage() {
+export default function Page() {　//認証後は、withAuthでラップする
 const [blogPosts, setBlogPosts] = useState<Post[]>([]);
 const [currentPage, setCurrentPage] = useState(1);
 const pageSize = 9;
@@ -111,5 +111,3 @@ onPageChange={handlePageChange}
 </>
 );
 }
-
-export default withAuth

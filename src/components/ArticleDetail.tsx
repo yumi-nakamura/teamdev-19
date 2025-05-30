@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { CommentSection } from "./CommentSection";
 import { supabase } from "@/utils/supabase";
 
-
 // 型定義
 type Category = {
 name: string;
@@ -72,7 +71,7 @@ return (
 
 <div className="mb-4 flex justify-center">
 {article.image_path ? (
-<img
+<img       
 src={article.image_path}
 alt="投稿画像"
 className="w-170 h-85 object-cover rounded"

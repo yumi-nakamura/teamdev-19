@@ -8,6 +8,8 @@ import { supabase } from "@/lib/supabaseClient";
 import "./globals.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link"
+
+
 type Category = {
 id: number;
 name: string;
