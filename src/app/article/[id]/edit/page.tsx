@@ -2,15 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
-<<<<<<< HEAD
 import {supabase} from "../../../../libs/supabase"
 import { uploadImageToSupabase } from "../../../../libs/uploadImageToSupabase"
-
-=======
 import { withAuth } from "@/libs/withAuth";
 import { useAuth } from "@/libs/AuthContext";
 import Header from "@/components/Header";
->>>>>>> 0d400781402fcaad2a2a7ff2fda2e08a57b0a414
 
 // 記事編集ページのコンポーネント
 export default withAuth(function EditArticlePage() {
@@ -84,14 +80,10 @@ export default withAuth(function EditArticlePage() {
         content: data.content,
         category_id: data.category_id,
         image_path: imagePath,
-<<<<<<< HEAD
         updated_at:  getJSTDate(),
-        //※user_id は認証機能実装後に追加
-=======
         user_id: user?.id,
         user_email: user?.email,
         user_avatar: user?.user_metadata?.avatar_url || null,
->>>>>>> 0d400781402fcaad2a2a7ff2fda2e08a57b0a414
       };
 
       const { error } = await supabase
