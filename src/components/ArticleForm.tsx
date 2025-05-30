@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 
-
 // 記事フォームで扱うデータの型定義
 export interface ArticleFormData {
   title: string;
@@ -33,8 +32,6 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
     category_id: 0,
     image: null,
   });
-
-  // 画像アップロード部分の状態はformData.imageで管理するため、imagePreviewのみ保持
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -78,16 +75,12 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
 
   // フォーム送信ボタンがクリックされたときに実行される関数
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // ページのリロードを防止
-
-    if (!formData.image) {
-      alert("画像が選択されていません！");
+    e.preventDefault();
+    if (formData.category_id === 0) {
+      alert("カテゴリーを選択してください");
       return;
     }
-
-    console.log("選択された画像ファイル:", formData.image);
-
-    onSubmit(formData); // 入力データを親コンポーネントに渡す
+    onSubmit(formData);
   };
 
   return (
@@ -170,7 +163,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
             className="border border-gray-300 rounded px-3 py-2 bg-white"
             required
           >
-            <option value="">Select category</option>
+            <option value="">選択してください</option>
             {CATEGORIES.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
