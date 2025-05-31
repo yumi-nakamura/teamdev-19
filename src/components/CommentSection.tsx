@@ -30,15 +30,19 @@ export const CommentSection = ({ postId }: { postId: string | number }) => {
 
     // --- リアルタイム購読 ---
     const channel = supabase
-      .channel('comments')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'comments',
-        filter: `post_id=eq.${postId}`
-      }, payload => {
-        setComments(prev => [payload.new as Comment, ...prev]);
-      })
+      .channel("comments")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "comments",
+          filter: `post_id=eq.${postId}`,
+        },
+        (payload) => {
+          setComments((prev) => [payload.new as Comment, ...prev]);
+        },
+      )
       .subscribe();
 
     return () => {

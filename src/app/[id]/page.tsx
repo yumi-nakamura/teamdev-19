@@ -8,7 +8,7 @@ import "../globals.css";
 
 export default function Profile() {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 6; 
+  const pageSize = 6;
 
   const blogPosts = [
     {
@@ -75,11 +75,11 @@ export default function Profile() {
               ))}
           </div>
           <div style={{ padding: 20 }}>
-            <Pagination 
-              totalPages={10} 
+            <Pagination
+              totalPages={10}
               pageSize={pageSize}
               currentPage={currentPage}
-              onPageChange={handlePageChange} 
+              onPageChange={handlePageChange}
             />
           </div>
         </main>
