@@ -27,7 +27,6 @@ type Category = {
 
 export default function Page() {
   const [blogPosts, setBlogPosts] = useState<Post[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const pageSize = 9;
@@ -90,7 +89,7 @@ export default function Page() {
 
         <main>
           <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
-            {displayedPosts.map((post, idx) => (
+            {displayedPosts.map((post) => (
               <PostCard
                 key={post.id}
                 {...post}
