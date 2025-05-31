@@ -7,8 +7,8 @@ import { SearchBar } from "../components/SearchBar";
 import { useAuth } from "../libs/AuthContext";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
+import Link from "next/link";
 import Header from "../components/Header";
-
 
 type Post = {
   post_id: string;
