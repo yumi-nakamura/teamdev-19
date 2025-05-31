@@ -53,9 +53,9 @@ export const CommentSection = ({ postId }: { postId: string | number }) => {
       .from("comments")
       .insert([
         {
-          post_id: Number(postId),
+          post_id: 38,
           content: commentText,
-          user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad",
+          user_id: "aefe67ab-e521-4621-8042-08d3a09ea3f3",
         },
       ])
       .select();
