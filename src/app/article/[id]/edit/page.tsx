@@ -5,6 +5,9 @@ import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
 import { withAuth } from "@/libs/withAuth";
 import { useAuth } from "@/libs/AuthContext";
 import Header from "@/components/Header";
+import {supabase} from "../../../../libs/supabase"
+import { uploadImageToSupabase } from "../../../../libs/uploadImageToSupabase"
+
 
 // 記事編集ページのコンポーネント
 export default withAuth(function EditArticlePage() {
@@ -21,18 +24,31 @@ export default withAuth(function EditArticlePage() {
       try {
         setLoading(true);
 
-        // ダミーデータ（将来的にAPIから取得）
-        const dummyArticle: ArticleFormData = {
-          title: "サンプル記事タイトル",
-          content:
-            "これはサンプルの記事内容です。実際のAPIから取得したデータに置き換えてください。",
-          category_id: 1,
+        const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("id", Number(articleId))
+        .single(); // 1件だけ取得
+
+      if (error) {
+        throw error;
+      }
+
+       if (data.user_id !== user?.id) {
+          setError("この投稿を編集する権限がありません。");
+          return;
+        }
+
+        const fetchedArticle: ArticleFormData = {
+          title: data.title,
+          content: data.content,
+          category_id: data.category_id,
           image: null,
-          image_path: "/images/sample-image.jpg",
+          image_path: data.image_path || "",
         };
 
-        setArticle(dummyArticle);
-      } catch (err) {
+        setArticle(fetchedArticle);
+      }catch (err) {
         console.error("記事データの取得エラー:", err);
         setError("記事データの取得に失敗しました。");
       } finally {
@@ -40,18 +56,30 @@ export default withAuth(function EditArticlePage() {
       }
     }
 
-    if (articleId) fetchArticle();
-  }, [articleId]);
+      if (articleId && user) {
+        fetchArticle();
+      }
+    }, [articleId,user]);
+
+    //※記事投稿に合わせる
+      function getJSTDate(): Date {
+      const now = new Date();
+      const jstOffset = 9 * 60 * 60 * 1000;
+      return new Date(now.getTime() + jstOffset);
+    }
 
   // 更新処理
   const handleSubmit = async (data: ArticleFormData) => {
     try {
-      // 画像ファイルがある場合は、アップロード処理を行う
       let imagePath = data.image_path;
       if (data.image) {
-        // 実際には画像アップロード処理が必要（現在はダミー処理）
-        imagePath = `/images/uploaded-${Date.now()}.jpg`;
+       const uploadedUrl = await uploadImageToSupabase(data.image);
+      if (!uploadedUrl) {
+        alert("画像のアップロードに失敗しました");
+        return;
       }
+      imagePath = uploadedUrl;
+    }
 
       // 更新データ
       const updateData = {
@@ -59,10 +87,17 @@ export default withAuth(function EditArticlePage() {
         content: data.content,
         category_id: data.category_id,
         image_path: imagePath,
-        user_id: user?.id,
-        user_email: user?.email,
-        user_avatar: user?.user_metadata?.avatar_url || null,
+        updated_at:  getJSTDate(),
       };
+
+      const { error } = await supabase
+      .from("posts") 
+      .update(updateData)
+      .eq("id",  Number(articleId));
+
+       if (error) {
+      throw error;
+    }
 
       console.log("送信する更新データ:", updateData);
 
