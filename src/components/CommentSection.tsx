@@ -1,5 +1,8 @@
 "use client";
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { fetchCommentsByPostId } from "../lib/fetchComments"; // パスは必要に応じて調整
+import { supabase } from "../lib/supabaseClient"; // supabaseClientのパスは必要に応じて調整
 
 interface Comment {
   id: number;
@@ -10,24 +13,37 @@ interface Comment {
   updated_at: Date;
 }
 
-export const CommentSection = () => {
+export const CommentSection = ({ postId }: { postId: number }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
+  useEffect(() => {
+    console.log("postId", postId);
+    const getComments = async () => {
+      const data = await fetchCommentsByPostId(postId);
+      setComments(data);
+    };
 
-  const handleAddComment = () => {
-    if (commentText.trim() === "") return;
-    setComments([
-      ...comments,
-      {
-        id: Math.floor(Math.random() * 1000) + 1, // ランダムにIDを割り振る（バックエンド作成後は消す）
-        user_id: "abcdefg", // バックエンド作成後は消す
-        post_id: 1, // バックエンド作成後は消す
-        content: commentText,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-    ]);
-    setCommentText(""); // コメント追加後に入力欄をクリア
+    getComments();
+  }, [postId]);
+  const handleAddComment = async () => {
+    const { data, error } = await supabase
+      .from("comments")
+      .insert([
+        {
+          user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad",//認証前の仮IDです。変更します　
+          post_id: postId,
+          content: commentText,
+        },
+      ])
+      .select();
+
+    if (error) {
+      console.error("❌ 投稿失敗:", error);
+      return;
+    }
+
+    setComments((prev) => [...prev, ...data]);
+    setCommentText(""); // ← ここを追加してUX向上
   };
 
   return (

@@ -1,19 +1,20 @@
+// app/article/[id]/page.tsx
 import React from "react";
-import ArticleDetail from "@/components/ArticleDetail";
+import { ArticleDetail } from "@/components/ArticleDetail";
 import Header from "@/components/Header";
 
-
 export default async function ArticlePage({
-  params,
+params,
 }: {
-  params: { id: string };
+params: { id: string };
 }) {
-  const { id } = params;
+const { id } = params;
 
-  return (
-    <>
-      <Header />
-      <ArticleDetail id={id} />
-    </>
-  );
+return (
+<>
+<Header />
+<ArticleDetail postId={Number(id)} />
+</>
+);
 }
+// );
