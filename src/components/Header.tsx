@@ -6,16 +6,36 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-function PcMenu({ user, signOut, router }: { user: SupabaseUser | null, signOut: () => Promise<void>, router: { push: (path: string) => void } }) {
+function PcMenu({
+  user,
+  signOut,
+  router,
+}: {
+  user: SupabaseUser | null;
+  signOut: () => Promise<void>;
+  router: { push: (path: string) => void };
+}) {
   return (
     <div className="hidden min-[501px]:flex items-center">
-      {user ? <UserMenu user={user} signOut={signOut} router={router} /> : (
+      {user ? (
+        <UserMenu user={user} signOut={signOut} router={router} />
+      ) : (
         <>
           <Link href="/login">
-            <button type="button" className="w-[110px] h-[36px] bg-white text-black border border-black rounded-full text-[14px] font-bold px-2 py-1 mr-2">Login</button>
+            <button
+              type="button"
+              className="w-[110px] h-[36px] bg-white text-black border border-black rounded-full text-[14px] font-bold px-2 py-1 mr-2"
+            >
+              Login
+            </button>
           </Link>
           <Link href="/signup">
-            <button type="button" className="w-[110px] h-[36px] bg-[#383838] text-[#ffffff] rounded-full text-[14px] font-bold flex items-center justify-center px-2 py-1">Sign Up</button>
+            <button
+              type="button"
+              className="w-[110px] h-[36px] bg-[#383838] text-[#ffffff] rounded-full text-[14px] font-bold flex items-center justify-center px-2 py-1"
+            >
+              Sign Up
+            </button>
           </Link>
         </>
       )}
@@ -23,8 +43,17 @@ function PcMenu({ user, signOut, router }: { user: SupabaseUser | null, signOut:
   );
 }
 
-
-function MobileMenu({ user, isMenuOpen, setIsMenuOpen, handleLogout }: { user: SupabaseUser | null, isMenuOpen: boolean, setIsMenuOpen: (v: boolean) => void, handleLogout: () => void }) {
+function MobileMenu({
+  user,
+  isMenuOpen,
+  setIsMenuOpen,
+  handleLogout,
+}: {
+  user: SupabaseUser | null;
+  isMenuOpen: boolean;
+  setIsMenuOpen: (v: boolean) => void;
+  handleLogout: () => void;
+}) {
   return (
     <>
       <button
@@ -50,7 +79,10 @@ function MobileMenu({ user, isMenuOpen, setIsMenuOpen, handleLogout }: { user: S
               <>
                 <button
                   className="w-48 h-12 bg-[#383838] text-white rounded-full text-lg font-bold"
-                  onClick={() => { setIsMenuOpen(false); window.location.href = "/article/create"; }}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    window.location.href = "/article/create";
+                  }}
                 >
                   Create
                 </button>
@@ -64,10 +96,14 @@ function MobileMenu({ user, isMenuOpen, setIsMenuOpen, handleLogout }: { user: S
             ) : (
               <>
                 <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                  <button className="w-48 h-12 border border-black text-black rounded-full text-lg font-bold bg-white mb-2">Login</button>
+                  <button className="w-48 h-12 border border-black text-black rounded-full text-lg font-bold bg-white mb-2">
+                    Login
+                  </button>
                 </Link>
                 <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
-                  <button className="w-48 h-12 bg-[#383838] text-white rounded-full text-lg font-bold">Sign Up</button>
+                  <button className="w-48 h-12 bg-[#383838] text-white rounded-full text-lg font-bold">
+                    Sign Up
+                  </button>
                 </Link>
               </>
             )}
@@ -77,7 +113,6 @@ function MobileMenu({ user, isMenuOpen, setIsMenuOpen, handleLogout }: { user: S
     </>
   );
 }
-
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -91,8 +126,12 @@ const Header = () => {
   return (
     <header className="w-full max-w-[2055px] mx-auto h-[60px] bg-[#D9D9D9] px-[30px] flex justify-end items-center relative">
       <PcMenu user={user} signOut={signOut} router={router} />
-      <MobileMenu user={user} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} handleLogout={handleLogout} />
-
+      <MobileMenu
+        user={user}
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+        handleLogout={handleLogout}
+      />
     </header>
   );
 };

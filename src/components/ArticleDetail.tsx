@@ -1,98 +1,83 @@
+/** @jsxImportSource react */
 "use client";
-import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { CommentSection } from "./CommentSection";
-import { supabase } from "@/utils/supabase";
 
-// 型定義
+type User = {
+  id: number;
+  name: string;
+  image_path: string | null;
+};
+
 type Category = {
-name: string;
+  id: number;
+  name: string;
 };
 
-type Article = {
-id: number;
-title: string;
-content: string;
-created_at: string;
-image_path: string;
-categories: Category | null;
+type PostWithUser = {
+  id: number;
+  title: string;
+  content: string;
+  image_path: string | null;
+  created_at: string;
+  updated_at: string;
+  category: Category;
+  user_id: number;
+  user: User;
 };
 
-export const ArticleDetail = ({ postId }: { postId: number }) => {
-const [article, setArticle] = useState<Article | null>(null);
-const [error, setError] = useState<string | null>(null);
+export default function ArticleDetail({ post }: { post: PostWithUser }) {
+  return (
+    <>
+      {/* 詳細記事本体 */}
+      <div className="max-w-4xl mx-auto p-5">
+        <div className="bg-gray-50 rounded-lg p-6 shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">{post.title}</h1>
+            <div className="flex items-center">
+              {post.user?.image_path ? (
+                <Image
+                  src={post.user.image_path}
+                  alt="ユーザーアイコン"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gray-300" />
+              )}
+            </div>
+          </div>
 
-useEffect(() => {
-const fetchArticle = async () => {
-const { data, error } = await supabase
-.from("posts")
-.select("id, title, content, image_path, created_at, categories(name)")//リレーションで仮
-.eq("id", postId)
-.single();
+          <div className="mb-6">
+            {post.image_path ? (
+              <Image
+                src={post.image_path}
+                alt={post.title}
+                width={600}
+                height={400}
+                className="rounded object-cover w-full h-full"
+              />
+            ) : (
+              <div className="w-full h-64 bg-gray-300"></div>
+            )}
+          </div>
 
-if (error || !data) {
-console.error("❌ 記事取得エラー:", error);
-setError("記事が見つかりませんでした。");
-return;
+          <div className="text-base leading-relaxed">
+            <div className="flex gap-4 text-sm text-gray-600  mb-3">
+              <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                カテゴリ: {post.category?.name}
+              </span>
+              <span className="text-xs">
+                投稿日時: {new Date(post.created_at).toLocaleString()}
+              </span>
+            </div>
+            <p>{post.content}</p>
+          </div>
+          <CommentSection />
+        </div>
+        <CommentSection postId={post.id} />
+      </div>
+    </>
+  );
 }
-if (data) {
-const formatted: Article = {
-...data,
-categories: Array.isArray(data.categories) && data.categories.length > 0 ? data.categories[0] : null,
-};
-setArticle(formatted);
-}
-};
-
-fetchArticle();
-}, [postId]);
-
-if (error) {
-return <p className="text-center text-red-500 mt-10">{error}</p>;
-}
-
-if (!article) {
-return <p className="text-center text-gray-500 mt-10">読み込み中...</p>;
-}
-
-return (
-<>
-
-<div className="max-w-4xl mx-auto p-5">
-<div className="bg-gray-50 rounded-lg p-6 shadow-sm">
-<div className="flex justify-between items-center mb-6">
-<h1 className="text-2xl font-bold">{article.title}</h1>
-<div className="flex items-center space-x-2">
-<p className="text-sm text-gray-500 mr-4">
-{new Date(article.created_at).toLocaleString("ja-JP")}
-</p>
-<div className="w-11 h-11 rounded-full bg-gray-300"></div>
-</div>
-</div>
-
-<div className="mb-4 flex justify-center">
-{article.image_path ? (
-<img       
-src={article.image_path}
-alt="投稿画像"
-className="w-170 h-85 object-cover rounded"
-/>
-) : (
-<div className="w-170 h-85 bg-gray-300 rounded"></div>
-)}
-</div>
-
-{article.categories?.name && (
-<p className="mb-2 text-xs text-gray-500">
-カテゴリ: {article.categories.name}
-</p>
-)}
-
-<div className="text-base leading-relaxed">
-<p>{article.content}</p>
-</div>
-</div>
-<CommentSection postId={article.id} />
-</div>
-</>
-);
-};

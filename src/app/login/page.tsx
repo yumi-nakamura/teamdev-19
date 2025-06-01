@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "../../libs/AuthContext";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,9 @@ const LoginPage = () => {
     try {
       const { error, user } = await signIn(email, password);
       if (error) {
-        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
+        setError(
+          "ログインに失敗しました。メールアドレスとパスワードを確認してください。",
+        );
         return;
       }
       if (user) {

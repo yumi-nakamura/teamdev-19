@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 
-
 // 記事フォームで扱うデータの型定義
 export interface ArticleFormData {
   title: string;
@@ -10,22 +9,22 @@ export interface ArticleFormData {
   category_id: number;
   image: File | null;
   image_path?: string;
+  user_id?: string;
 }
-
-// カテゴリーの定義
-const CATEGORIES = [
-  { id: 1, name: "Technology" },
-  { id: 2, name: "Business" },
-  { id: 3, name: "Health" },
-  { id: 4, name: "Arts" },
-];
 
 interface ArticleFormProps {
   onSubmit: (formData: ArticleFormData) => void;
   initialData?: ArticleFormData;
+  categories: Array<{ id: number; name: string }>;
+  deleteButton?: React.ReactNode;
 }
 
-const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
+const ArticleForm: React.FC<ArticleFormProps> = ({
+  onSubmit,
+  initialData,
+  categories,
+  deleteButton,
+}) => {
   // フォームの状態を初期化
   const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
@@ -194,7 +193,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
         </div>
 
         {/* 送信ボタン */}
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-4">
+          {deleteButton}
           <button
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded"

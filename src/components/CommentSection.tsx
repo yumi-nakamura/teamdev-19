@@ -1,36 +1,63 @@
 "use client";
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { fetchCommentsByPostId } from "../lib/fetchComments"; // パスは必要に応じて調整
-import { supabase } from "../lib/supabaseClient"; // supabaseClientのパスは必要に応じて調整
+import React, { useState, useEffect } from "react";
+import { supabase } from "../libs/supabase";
 
 interface Comment {
   id: number;
   user_id: string;
   post_id: number;
   content: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
 }
 
-export const CommentSection = ({ postId }: { postId: number }) => {
+export const CommentSection = ({ postId }: { postId: string | number }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
-  useEffect(() => {
-    console.log("postId", postId);
-    const getComments = async () => {
-      const data = await fetchCommentsByPostId(postId);
-      setComments(data);
-    };
 
-    getComments();
+  // コメント取得＋リアルタイム購読
+  useEffect(() => {
+    // ①初回コメント取得
+    const fetchComments = async () => {
+      const { data, error } = await supabase
+        .from("comments")
+        .select("*")
+        .eq("post_id", postId)
+        .order("created_at", { ascending: false });
+      if (!error && data) setComments(data);
+    };
+    fetchComments();
+
+    // ②INSERTリアルタイム購読
+    const channel = supabase
+      .channel("comments")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "comments",
+          filter: `post_id=eq.${postId}`,
+        },
+        (payload) => {
+          setComments((prev) => [payload.new as Comment, ...prev]);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [postId]);
+
+  // コメント投稿
   const handleAddComment = async () => {
+    if (commentText.trim() === "") return;
     const { data, error } = await supabase
       .from("comments")
       .insert([
         {
-          user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad",//認証前の仮IDです。変更します　
+          user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad", //認証と連動予定
           post_id: postId,
           content: commentText,
         },
@@ -42,8 +69,10 @@ export const CommentSection = ({ postId }: { postId: number }) => {
       return;
     }
 
-    setComments((prev) => [...prev, ...data]);
-    setCommentText(""); // ← ここを追加してUX向上
+    if (data && data[0]) {
+      setComments([data[0], ...comments]);
+      setCommentText("");
+    }
   };
 
   return (
@@ -73,7 +102,7 @@ export const CommentSection = ({ postId }: { postId: number }) => {
           >
             <div className="flex flex-col items-center gap-1">
               <div className="w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center text-2xl text-gray-700 select-none font-[\'Material_Symbols_Outlined\']">
-                <span>f</span> {/* 仮アバター */}
+                <span>f</span>
               </div>
               <div className="text-xs text-gray-500">user</div>
             </div>

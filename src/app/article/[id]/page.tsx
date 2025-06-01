@@ -1,20 +1,50 @@
-// app/article/[id]/page.tsx
 import React from "react";
-import { ArticleDetail } from "@/components/ArticleDetail";
+import ArticleDetail from "@/components/ArticleDetail";
+import { supabase } from "@/libs/supabase";
 import Header from "@/components/Header";
 
-export default async function ArticlePage({
-params,
-}: {
-params: { id: string };
-}) {
-const { id } = params;
+interface ArticlePageProps {
+  params: {
+    id: string;
+  };
+}
 
-return (
-<>
-<Header />
-<ArticleDetail postId={Number(id)} />
-</>
-);
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const { id } = params;
+
+  const postId = Number(id);
+
+  const { data: post, error } = await supabase
+    .from("posts")
+    .select("*, category:categories(name)")
+    .eq("id", postId)
+    .single();
+
+  if (error || !post) {
+    return <main>記事が見つかりませんでした。</main>;
+  }
+
+  const { data: user, error: userError } = await supabase
+    .from("users")
+    .select("id, name, image_path")
+    .eq("id", post.user_id)
+    .single();
+
+  if (userError || !user) {
+    return <main>ユーザー情報が見つかりませんでした。</main>;
+  }
+
+  const postWithUser = {
+    ...post,
+    user,
+    category: post.category,
+  };
+
+  return (
+    <>
+      <Header />
+      <ArticleDetail post={postWithUser} />
+    </>
+  );
 }
 // );

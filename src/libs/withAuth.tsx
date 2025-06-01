@@ -1,64 +1,48 @@
 "use client";
-
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "./AuthContext";
-
-function LoadingSpinner() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-    </div>
-  );
-}
-
+import { supabase } from "./supabase";
 
 export function withAuth<P extends object>(
-  WrappedComponent: React.ComponentType<P>
+  WrappedComponent: React.ComponentType<P>,
 ) {
-  return function WithAuthComponent(props: P) {
-    const { user, loading } = useAuth();
+  return function WithAuth(props: P) {
     const router = useRouter();
 
     useEffect(() => {
-      if (!loading && !user) {
-        router.replace("/login");
-      }
-    }, [loading, user, router]);
-
-    if (loading) {
-      return <LoadingSpinner />;
-    }
-
-    if (!user) {
-      return null;
-    }
+      const checkAuth = async () => {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) {
+          router.push("/login");
+        }
+      };
+      checkAuth();
+    }, [router]);
 
     return <WrappedComponent {...props} />;
   };
 }
 
 export function withGuestOnly<P extends object>(
-  WrappedComponent: React.ComponentType<P>
+  WrappedComponent: React.ComponentType<P>,
 ) {
-  return function WithGuestOnlyComponent(props: P) {
-    const { user, loading } = useAuth();
+  return function WithGuestOnly(props: P) {
     const router = useRouter();
 
     useEffect(() => {
-      if (!loading && user) {
-        router.replace("/");
-      }
-    }, [loading, user, router]);
-
-    if (loading) {
-      return <LoadingSpinner />;
-    }
-
-    if (user) {
-      return null;
-    }
+      const checkAuth = async () => {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session) {
+          router.push("/");
+        }
+      };
+      checkAuth();
+    }, [router]);
 
     return <WrappedComponent {...props} />;
   };
-} 
+}
