@@ -1,7 +1,8 @@
-import React from "react";
+/** @jsxImportSource react */
+"use client";
+import Image from "next/image";
 import { CommentSection } from "./CommentSection";
 import Header from "./Header";
-import Image from "next/image";
 
 type User = {
   id: number;
@@ -76,11 +77,8 @@ export const ArticleDetail = ({ post }: { post: PostWithUser }) => {
             <p>{post.content}</p>
           </div>
         </div>
+        <CommentSection postId={post.id} />
       </div>
-      {/* コメント欄 */}
-      <CommentSection />
     </>
   );
-};
-
-export default ArticleDetail;
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import ArticleDetail from "@/components/ArticleDetail";
+import {ArticleDetail}from "@/components/ArticleDetail";
 import { supabase } from "@/libs/supabase";
 interface ArticlePageProps {
   params: {
@@ -8,7 +8,7 @@ interface ArticlePageProps {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const { id } = await params;
+  const { id } = params;
   const postId = Number(id);
 
   const { data: post, error } = await supabase
