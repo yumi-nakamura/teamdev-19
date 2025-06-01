@@ -2,14 +2,11 @@ import React from "react";
 import ArticleDetail from "@/components/ArticleDetail";
 import { supabase } from "@/libs/supabase";
 
-interface ArticlePageProps {
-  params: {
-    id: string;
-  };
-}
-
 export default async function ArticlePage({
-  params}: ArticlePageProps){
+  params,
+}: {
+  params: { id: string };
+}) {
   const { id } = params;
   
   const postId = Number(id);
