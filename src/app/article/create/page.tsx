@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/libs/supabase";
+import { supabase } from "@/utils/supabase";
 import { v4 as uuidv4 } from "uuid";
 import { withAuth } from "@/libs/withAuth";
 import { useAuth } from "@/libs/AuthContext";
@@ -11,10 +11,13 @@ import Header from "@/components/Header";
 
 export default withAuth(function CreateArticlePage() {
   const router = useRouter();
-  const [categories, setCategories] = useState([]);
+  const { user } = useAuth();
 
-  // カテゴリ一覧を取得
-  useEffect(() => {
+  // カテゴリ一覧の状態管理
+  const [categories, setCategories] = React.useState<{ id: number; name: string }[]>([]);
+
+  // カテゴリ一覧をSupabaseから取得
+  React.useEffect(() => {
     const fetchCategories = async () => {
       const { data, error } = await supabase.from("categories").select("*");
       if (error) {
@@ -26,7 +29,6 @@ export default withAuth(function CreateArticlePage() {
     };
     fetchCategories();
   }, []);
-  const { user } = useAuth();
 
   const uploadImage = async (file: File): Promise<string | null> => {
     if (!file) {
@@ -112,7 +114,6 @@ export default withAuth(function CreateArticlePage() {
         category_id: formData.category_id,
         user_id: user?.id,
         user_email: user?.email,
-        user_avatar: user?.user_metadata?.avatar_url || null,
       };
 
       if (imagePath) {
