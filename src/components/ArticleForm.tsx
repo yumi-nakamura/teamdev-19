@@ -12,23 +12,17 @@ export interface ArticleFormData {
   user_id?: string;
 }
 
-// カテゴリーの定義
-const CATEGORIES = [
-  { id: 1, name: "Technology" },
-  { id: 2, name: "Business" },
-  { id: 3, name: "Health" },
-  { id: 4, name: "Arts" },
-];
-
 interface ArticleFormProps {
   onSubmit: (formData: ArticleFormData) => void;
   initialData?: ArticleFormData;
+  categories: Array<{ id: number; name: string }>;
   deleteButton?: React.ReactNode;
 }
 
 const ArticleForm: React.FC<ArticleFormProps> = ({
   onSubmit,
   initialData,
+  categories,
   deleteButton,
 }) => {
   // フォームの状態を初期化
