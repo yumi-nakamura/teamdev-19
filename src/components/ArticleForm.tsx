@@ -9,6 +9,7 @@ export interface ArticleFormData {
   category_id: number;
   image: File | null;
   image_path?: string;
+  user_id?: string;
 }
 
 // カテゴリーの定義
@@ -22,9 +23,14 @@ const CATEGORIES = [
 interface ArticleFormProps {
   onSubmit: (formData: ArticleFormData) => void;
   initialData?: ArticleFormData;
+  deleteButton?: React.ReactNode;
 }
 
-const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
+const ArticleForm: React.FC<ArticleFormProps> = ({
+  onSubmit,
+  initialData,
+  deleteButton,
+}) => {
   // フォームの状態を初期化
   const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
@@ -193,7 +199,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
         </div>
 
         {/* 送信ボタン */}
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-4">
+          {deleteButton}
           <button
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded"

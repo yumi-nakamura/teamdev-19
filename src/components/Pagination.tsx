@@ -1,19 +1,30 @@
 "use client";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 
 type Props = {
   totalPages: number;
-  onPageChange?: (page: number) => void;
+  pageSize: number; // 1ページあたりの記事数
+  currentPage: number; // 親から渡された現在のページ番号
+  onPageChange?: (page: number, startIndex: number, endIndex: number) => void;
 };
 
-const Pagination: FC<Props> = ({ totalPages, onPageChange }) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const Pagination: FC<Props> = ({
+  totalPages,
+  pageSize,
+  currentPage,
+  onPageChange,
+}) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const goToPage = (page: number) => {
     if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-    onPageChange?.(page);
+    // 内部状態を更新せず、親のonPageChangeを呼び出す
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = Math.min(
+      startIndex + pageSize - 1,
+      totalPages * pageSize - 1,
+    );
+    onPageChange?.(page, startIndex, endIndex);
   };
 
   const prevPage = () => goToPage(currentPage - 1);

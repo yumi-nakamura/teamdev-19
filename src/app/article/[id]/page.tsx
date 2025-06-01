@@ -12,7 +12,7 @@ export default async function ArticlePage({
   return (
     <>
       <Header />
-      <ArticleDetail id={id} />
+      <ArticleDetail articleId={id} />
     </>
   );
 }
