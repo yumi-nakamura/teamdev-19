@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-
 interface UserMenuProps {
   user: SupabaseUser;
   signOut: () => Promise<void>;

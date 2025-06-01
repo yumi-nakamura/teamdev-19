@@ -1,13 +1,15 @@
 "use client";
-import React from "react";
-import Pagination from "../../components/Pagination";
-import PostCard from "../../components/PostCard";
+import React, { useState } from "react";
+import Pagination from "@/components/Pagination";
+import PostCard from "@/components/PostCard";
 import "../globals.css";
 import { withAuth } from "@/libs/withAuth";
 import Header from "@/components/Header";
 
-
 export default withAuth(function Profile() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
+
   const blogPosts = [
     {
       post_id: "1",
@@ -23,6 +25,7 @@ export default withAuth(function Profile() {
   ];
 
   const handlePageChange = (page: number) => {
+    setCurrentPage(page);
     console.log("選択されたページ:", page);
     // ここで API を叩いてデータ再取得、スクロールトップするなどの処理
   };
@@ -43,7 +46,12 @@ export default withAuth(function Profile() {
               ))}
           </div>
           <div style={{ padding: 20 }}>
-            <Pagination totalPages={10} onPageChange={handlePageChange} />
+            <Pagination
+              totalPages={10}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
           </div>
         </main>
         <footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">

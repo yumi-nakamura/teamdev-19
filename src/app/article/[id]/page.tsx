@@ -2,7 +2,6 @@ import React from "react";
 import ArticleDetail from "@/components/ArticleDetail";
 import Header from "@/components/Header";
 
-
 export default async function ArticlePage({
   params,
 }: {
@@ -13,7 +12,7 @@ export default async function ArticlePage({
   return (
     <>
       <Header />
-      <ArticleDetail id={id} />
+      <ArticleDetail articleId={id} />
     </>
   );
 }

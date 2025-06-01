@@ -1,15 +1,27 @@
+/** @jsxImportSource react */
 "use client";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { CommentSection } from "./CommentSection";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "../lib/supabaseClient";
 
-
-interface ArticleDetailProps {
+interface Article {
   id: string;
+  title: string;
+  content: string;
+  image_path?: string;
+  created_at: string;
+  categories?: {
+    name: string;
+  };
 }
 
-export default function ArticleDetail({ id }: ArticleDetailProps) {
-  const [article, setArticle] = useState<any>(null);
+interface ArticleDetailProps {
+  articleId: string;
+}
+
+export default function ArticleDetail({ articleId }: ArticleDetailProps) {
+  const [article, setArticle] = useState<Article | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,7 +29,7 @@ export default function ArticleDetail({ id }: ArticleDetailProps) {
       const { data, error } = await supabase
         .from("posts")
         .select("*, categories(name)")
-        .eq("id", Number(id))
+        .eq("id", Number(articleId))
         .single();
 
       if (error || !data) {
@@ -30,7 +42,7 @@ export default function ArticleDetail({ id }: ArticleDetailProps) {
     };
 
     fetchArticle();
-  }, [id]);
+  }, [articleId]);
 
   if (error) {
     return <p className="text-center text-red-500 mt-10">{error}</p>;
@@ -56,10 +68,12 @@ export default function ArticleDetail({ id }: ArticleDetailProps) {
 
           <div className="mb-4 flex justify-center">
             {article.image_path ? (
-              <img
+              <Image
                 src={article.image_path}
                 alt="投稿画像"
-                className="w-170 h-85 object-cover rounded"
+                width={680}
+                height={340}
+                className="object-cover rounded"
               />
             ) : (
               <div className="w-170 h-85 bg-gray-300 rounded"></div>
@@ -75,8 +89,8 @@ export default function ArticleDetail({ id }: ArticleDetailProps) {
           <div className="text-base leading-relaxed">
             <p>{article.content}</p>
           </div>
-          <CommentSection />
         </div>
+        <CommentSection postId={article.id} />
       </div>
     </div>
   );
