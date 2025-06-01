@@ -8,6 +8,12 @@ export default async function ArticlePage({
   params: { id: string };
 }) {
   const { id } = params;
+export default async function ArticlePage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = params;
 
   return (
     <>

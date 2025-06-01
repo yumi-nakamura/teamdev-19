@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+"use client";
+import React, { useEffect, useState }, { useEffect, useState } from "react";
 import Image from "next/image";
 import { CommentSection } from "./CommentSection";
 import { supabase } from "../lib/supabaseClient";
@@ -56,6 +57,10 @@ export default function ArticleDetail({ articleId }: ArticleDetailProps) {
       <div className="bg-gray-50 w-180 rounded-lg p-5 shadow-sm">
         <div className="mb-3">
           <div className="flex justify-between items-start mb-2">
+    <div className="flex justify-center mx-auto p-5 m-10">
+      <div className="bg-gray-50 w-180 rounded-lg p-5 shadow-sm">
+        <div className="mb-3">
+          <div className="flex justify-between items-start mb-2">
             <h1 className="text-2xl font-bold">{article.title}</h1>
             <div className="flex items-center space-x-2">
               <p className="text-sm text-gray-500 mr-4">
@@ -85,12 +90,21 @@ export default function ArticleDetail({ articleId }: ArticleDetailProps) {
             </p>
           )}
 
+          {article.categories?.name && (
+            <p className="mb-2 text-xs text-gray-500">
+              カテゴリ: {article.categories.name}
+            </p>
+          )}
+
           <div className="text-base leading-relaxed">
             <p>{article.content}</p>
           </div>
+          <CommentSection />
         </div>
         <CommentSection postId={article.id} />
       </div>
     </div>
+    </div>
   );
+}
 }
