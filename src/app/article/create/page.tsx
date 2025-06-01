@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/libs/supabase";
 import { v4 as uuidv4 } from "uuid";
 import { withAuth } from "@/libs/withAuth";
 import { useAuth } from "@/libs/AuthContext";
@@ -11,6 +11,21 @@ import Header from "@/components/Header";
 
 export default withAuth(function CreateArticlePage() {
   const router = useRouter();
+  const [categories, setCategories] = useState([]);
+
+  // カテゴリ一覧を取得
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase.from("categories").select("*");
+      if (error) {
+        console.error("カテゴリ取得エラー:", error);
+        setCategories([]);
+      } else {
+        setCategories(data || []);
+      }
+    };
+    fetchCategories();
+  }, []);
   const { user } = useAuth();
 
   const uploadImage = async (file: File): Promise<string | null> => {
@@ -126,7 +141,7 @@ export default withAuth(function CreateArticlePage() {
   return (
     <div>
       <Header />
-      <ArticleForm onSubmit={handleSubmit} />
+      <ArticleForm onSubmit={handleSubmit} categories={categories} />
     </div>
   );
 });

@@ -89,6 +89,7 @@ export default function ArticleDetail({ articleId }: ArticleDetailProps) {
           <div className="text-base leading-relaxed">
             <p>{article.content}</p>
           </div>
+          <CommentSection />
         </div>
         <CommentSection postId={article.id} />
       </div>
