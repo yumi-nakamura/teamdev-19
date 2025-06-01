@@ -8,7 +8,6 @@ import { useAuth } from "../libs/AuthContext";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
-import Header from "../components/Header";
 
 type Post = {
   post_id: string;
@@ -58,6 +57,7 @@ export default function Page() {
 
   // ページ変更時
   const handlePageChange = (page: number) => {
+    setCurrentPage(page);
     console.log("Page changed to:", page);
   };
 

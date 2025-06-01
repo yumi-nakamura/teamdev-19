@@ -33,7 +33,6 @@ export default withAuth(function Profile() {
   return (
     <>
       <Header />
-      <Header />
       <div className="bg-gray-50 text-gray-900">
         <main>
           <h1 className="max-w-6xl text-center mt-10 text-4xl font-bold text-gray-500">
@@ -61,5 +60,4 @@ export default withAuth(function Profile() {
       </div>
     </>
   );
-});
 });
