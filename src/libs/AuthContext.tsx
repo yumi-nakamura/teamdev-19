@@ -1,5 +1,4 @@
 "use client";
-
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
@@ -38,11 +37,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setLoading(false);
+      
       const { data } = supabase.auth.onAuthStateChange((_event, session) => {
         setUser(session?.user ?? null);
       });
+      
       subscriptionRef.current = data.subscription;
     })();
+    
     return () => {
       if (subscriptionRef.current) subscriptionRef.current.unsubscribe();
     };
@@ -75,10 +77,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await supabase.auth.signOut();
     setUser(null);
   };
-
   return (
     <AuthContext.Provider value={{ user, loading, signOut, signIn, signUp }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
