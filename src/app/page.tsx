@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import Pagination from "@/components/Pagination";
 import PostCard from "@/components/PostCard";
 import { SearchBar } from "@/components/SearchBar";
-import { useAuth } from "@/libs/AuthContext";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/libs/supabase";
 import Header from "@/components/Header";
 
