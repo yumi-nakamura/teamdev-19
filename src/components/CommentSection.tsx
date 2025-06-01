@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { supabase } from "../libs/supabase";
 
 interface Comment {
   id: number;
@@ -14,10 +14,10 @@ interface Comment {
 export const CommentSection = ({ postId }: { postId: string | number }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
-  // const [userId, setUserId] = useState<string | null>(null);
 
-  // コメント取得
+  // コメント取得＋リアルタイム購読
   useEffect(() => {
+    // ①初回コメント取得
     const fetchComments = async () => {
       const { data, error } = await supabase
         .from("comments")
@@ -28,7 +28,7 @@ export const CommentSection = ({ postId }: { postId: string | number }) => {
     };
     fetchComments();
 
-    // --- リアルタイム購読 ---
+    // ②INSERTリアルタイム購読
     const channel = supabase
       .channel("comments")
       .on(
@@ -57,13 +57,19 @@ export const CommentSection = ({ postId }: { postId: string | number }) => {
       .from("comments")
       .insert([
         {
-          post_id: 38,
+          user_id: "6040b85b-9004-4a87-b085-3aceaa4f38ad", //認証と連動予定
+          post_id: postId,
           content: commentText,
-          user_id: "aefe67ab-e521-4621-8042-08d3a09ea3f3",
         },
       ])
       .select();
-    if (!error && data && data[0]) {
+
+    if (error) {
+      console.error("❌ 投稿失敗:", error);
+      return;
+    }
+
+    if (data && data[0]) {
       setComments([data[0], ...comments]);
       setCommentText("");
     }
@@ -96,7 +102,7 @@ export const CommentSection = ({ postId }: { postId: string | number }) => {
           >
             <div className="flex flex-col items-center gap-1">
               <div className="w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center text-2xl text-gray-700 select-none font-[\'Material_Symbols_Outlined\']">
-                <span>f</span> {/* 仮アバター */}
+                <span>f</span>
               </div>
               <div className="text-xs text-gray-500">user</div>
             </div>

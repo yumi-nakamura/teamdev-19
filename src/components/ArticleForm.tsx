@@ -22,7 +22,6 @@ interface ArticleFormProps {
 const ArticleForm: React.FC<ArticleFormProps> = ({
   onSubmit,
   initialData,
-  categories,
   deleteButton,
 }) => {
   // フォームの状態を初期化

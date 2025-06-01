@@ -1,58 +1,62 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Pagination from "../components/Pagination";
-import PostCard from "../components/PostCard";
 import "./globals.css";
-import { SearchBar } from "../components/SearchBar";
-import { useAuth } from "../libs/AuthContext";
-import { useRouter } from "next/navigation";
-import { supabase } from "../lib/supabaseClient";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import Pagination from "@/components/Pagination";
+import PostCard from "@/components/PostCard";
+import { SearchBar } from "@/components/SearchBar";
+import { supabase } from "@/libs/supabase";
+import Header from "@/components/Header";
 
+type Category = {
+  id: number;
+  name: string;
+};
 type Post = {
-  post_id: string;
-  id: string;
-  user_id: string;
-  category_id: string;
+  id: number;
   title: string;
   content: string;
   image_path: string;
   created_at: string;
-  updated_at: string;
-  category?: Category;
-};
-
-type Category = {
-  id: string;
-  name: string;
+  category_id: number;
 };
 
 export default function Page() {
-  const { user, signOut } = useAuth();
-  const router = useRouter();
   const [blogPosts, setBlogPosts] = useState<Post[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const pageSize = 9;
   const totalPages = Math.ceil(blogPosts.length / pageSize);
 
+  // ページング
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const displayedPosts = blogPosts.slice(startIndex, endIndex);
+
+  // 投稿・カテゴリ取得
   useEffect(() => {
     const fetchPosts = async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("*, category:categories(*)")
-        .order("created_at", { ascending: false });
+        .select("id, title, content, image_path, created_at, category_id");
       if (error) {
-        console.error("データ取得エラー:", error);
-      } else {
-        const sorted = (data || []).sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        );
-        setBlogPosts(sorted);
+        console.error("❌ 投稿取得エラー:", error);
+        return;
       }
+      setBlogPosts(data ?? []);
     };
+
+    const fetchCategories = async () => {
+      const { data, error } = await supabase.from("categories").select("*");
+      if (error) {
+        console.error("❌ カテゴリ取得エラー:", error);
+        return;
+      }
+      setCategories(data ?? []);
+    };
+
     fetchPosts();
+    fetchCategories();
   }, []);
 
   // ページ変更時
@@ -61,75 +65,42 @@ export default function Page() {
     console.log("Page changed to:", page);
   };
 
-  const handleLogout = async () => {
-    await signOut();
-    router.push("/login");
-  };
-
-  // 表示する記事をスライス
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const displayedPosts = blogPosts.slice(startIndex, endIndex);
-
   return (
-    <>
-      <div className="bg-gray-50 text-gray-900">
-        <header className="bg-white px-4 py-3">
-          <div className="max-w-5xl mx-auto flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-900">BlogTitle</h1>
-            <nav className="space-x-4 text-sm">
-              {user ? (
-                <button
-                  onClick={handleLogout}
-                  className="text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center"
-                >
-                  Logout
-                </button>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="text-gray-700 bg-white hover:bg-gray-100 border border-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
-            </nav>
-          </div>
-        </header>
-
-        <SearchBar />
-        <main>
-          <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
-            {displayedPosts.map((post) => (
+    <div className="bg-gray-50 text-gray-900">
+      <Header />
+      <SearchBar />
+      <main>
+        <div className="max-w-6xl w-full mx-auto flex flex-wrap gap-16 m-16 justify-center">
+          {displayedPosts.map((post, idx) => {
+            const category = categories.find(
+              (cat) => String(cat.id) === String(post.category_id),
+            );
+            return (
               <PostCard
-                key={post.id}
-                {...post}
+                key={post.id || String(idx)}
                 post_id={post.id}
-                categoryName={post.category ? post.category.name : ""}
+                title={post.title}
+                content={post.content}
+                image_path={post.image_path}
+                created_at={post.created_at}
+                categoryName={category ? category.name : ""}
               />
-            ))}
-          </div>
-          <div style={{ padding: 20 }}>
-            <Pagination
-              totalPages={totalPages}
-              pageSize={pageSize}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        </main>
-        <footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} TeamDev19. All rights reserved.
-        </footer>
-      </div>
-    </>
+            );
+          })}
+        </div>
+
+        <div style={{ padding: 20 }}>
+          <Pagination
+            totalPages={totalPages}
+            pageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      </main>
+      <footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">
+        © {new Date().getFullYear()} TeamDev19. All rights reserved.
+      </footer>
+    </div>
   );
 }
