@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/libs/supabase";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({

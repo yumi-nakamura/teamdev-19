@@ -15,21 +15,15 @@ export interface ArticleFormData {
 interface ArticleFormProps {
   onSubmit: (formData: ArticleFormData) => void;
   initialData?: ArticleFormData;
-<<<<<<< HEAD
   categories: Array<{ id: number; name: string }>;
-=======
   deleteButton?: React.ReactNode;
->>>>>>> main
 }
 
 const ArticleForm: React.FC<ArticleFormProps> = ({
   onSubmit,
   initialData,
-<<<<<<< HEAD
   categories,
-=======
   deleteButton,
->>>>>>> main
 }) => {
   // フォームの状態を初期化
   const [formData, setFormData] = useState<ArticleFormData>({
@@ -175,13 +169,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
             className="border border-gray-300 rounded px-3 py-2 bg-white"
             required
           >
-<<<<<<< HEAD
-            <option value="">選択してください</option>
-            {categories.map((category) => (
-=======
             <option value="">Select category</option>
             {CATEGORIES.map((category) => (
->>>>>>> main
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
