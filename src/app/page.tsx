@@ -23,8 +23,6 @@ type Post = {
 };
 
 export default function Page() {
-  const { user, signOut } = useAuth();
-  const router = useRouter();
   const [blogPosts, setBlogPosts] = useState<Post[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,12 +65,6 @@ export default function Page() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     console.log("Page changed to:", page);
-  };
-
-  // ログアウト
-  const handleLogout = async () => {
-    await signOut();
-    router.push("/login");
   };
 
   return (
