@@ -2,27 +2,28 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useAuth } from "../../libs/AuthContext";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/libs/AuthContext";
 import { withGuestOnly } from "@/libs/withAuth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     try {
       const { error, user } = await signIn(email, password);
+      setLoading(false);
       if (error) {
-        setError(
-          "ログインに失敗しました。メールアドレスとパスワードを確認してください。",
-        );
+        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
         return;
       }
       if (user) {
@@ -31,12 +32,12 @@ const LoginPage = () => {
     } catch (err) {
       setError("ログイン中にエラーが発生しました。");
       console.error("Login error:", err);
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* ナビゲーションバー */}
       <nav className="bg-gray-100 p-4">
         <div className="container mx-auto flex justify-end space-x-4">
           <Link
@@ -54,24 +55,22 @@ const LoginPage = () => {
         </div>
       </nav>
 
-      {/* メインコンテンツ */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-8">Sign In</h1>
           </div>
+
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
               {error}
             </div>
           )}
+
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-6">
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email
                 </label>
                 <input
@@ -86,10 +85,7 @@ const LoginPage = () => {
                 />
               </div>
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                   Password
                 </label>
                 <input
@@ -107,17 +103,12 @@ const LoginPage = () => {
 
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
-
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-              {error}
-            </div>
-          )}
 
           <div className="text-center mt-4">
             <span className="text-gray-600">Don&apos;t have an account? </span>
