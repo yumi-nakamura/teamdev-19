@@ -1,5 +1,6 @@
 import React from "react";
 import ArticleDetail from "@/components/ArticleDetail";
+import Header from "@/components/Header";
 
 interface ArticlePageProps {
   params: {
@@ -8,13 +9,16 @@ interface ArticlePageProps {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const { id } = await params;
+  const { id } = params;
   //npm run lint実行時にエラーが出るので、console.logを追加
   console.log(id);
 
   return (
-    <main>
-      <ArticleDetail articleId={id} />
-    </main>
+    <>
+      <Header />
+      <main>
+        <ArticleDetail articleId={id} />
+      </main>
+    </>
   );
 }
