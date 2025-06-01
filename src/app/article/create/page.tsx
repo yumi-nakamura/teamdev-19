@@ -1,12 +1,28 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ArticleForm, { ArticleFormData } from "@/components/ArticleForm";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { supabase } from "@/libs/supabase";
 
 export default function CreateArticlePage() {
   const router = useRouter();
+  const [categories, setCategories] = useState([]);
+
+  // カテゴリ一覧を取得
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase.from("categories").select("*");
+      if (error) {
+        console.error("カテゴリ取得エラー:", error);
+        setCategories([]);
+      } else {
+        setCategories(data || []);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (data: ArticleFormData) => {
     try {
@@ -52,7 +68,7 @@ export default function CreateArticlePage() {
           </nav>
         </div>
       </header>
-      <ArticleForm onSubmit={handleSubmit} />;
+      <ArticleForm onSubmit={handleSubmit} categories={categories} />;
     </div>
   );
 }

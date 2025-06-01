@@ -11,20 +11,17 @@ export interface ArticleFormData {
   image_path?: string;
 }
 
-// カテゴリーの定義
-const CATEGORIES = [
-  { id: 1, name: "Technology" },
-  { id: 2, name: "Business" },
-  { id: 3, name: "Health" },
-  { id: 4, name: "Arts" },
-];
-
 interface ArticleFormProps {
   onSubmit: (formData: ArticleFormData) => void;
   initialData?: ArticleFormData;
+  categories: Array<{ id: number; name: string }>;
 }
 
-const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
+const ArticleForm: React.FC<ArticleFormProps> = ({
+  onSubmit,
+  initialData,
+  categories,
+}) => {
   // フォームの状態を初期化
   const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
@@ -164,7 +161,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
             required
           >
             <option value="">選択してください</option>
-            {CATEGORIES.map((category) => (
+            {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
