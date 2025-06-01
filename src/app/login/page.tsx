@@ -3,41 +3,35 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/libs/supabaseClient";
+import { useAuth } from "@/libs/AuthContext";
+import { withGuestOnly } from "@/libs/withAuth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
   const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
-    setSuccessMsg(null);
+    setError(null);
     setLoading(true);
 
     try {
-      const { error, data: sessionData } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error, user } = await signIn(email, password);
       setLoading(false);
-
       if (error) {
-        setErrorMsg(error.message);
+        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
         return;
       }
-
-      setSuccessMsg(`ログイン成功: ${sessionData.user?.email}`);
-      console.log("Login successful:", sessionData.user);
-
-      // 一覧ページへ遷移
-      router.push("/list");
-    } catch (err: unknown) {
-      console.error("ログインエラー:", err);
-      setErrorMsg("エラーが発生しました");
+      if (user) {
+        router.push("/");
+      }
+    } catch (err) {
+      setError("ログイン中にエラーが発生しました。");
+      console.error("Login error:", err);
       setLoading(false);
     }
   };
@@ -66,13 +60,17 @@ const LoginPage = () => {
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-8">Sign In</h1>
           </div>
+
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+              {error}
+            </div>
+          )}
+
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-6">
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email
                 </label>
                 <input
@@ -87,10 +85,7 @@ const LoginPage = () => {
                 />
               </div>
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                   Password
                 </label>
                 <input
@@ -115,13 +110,6 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {errorMsg && (
-            <p className="text-red-500 text-center mt-4">{errorMsg}</p>
-          )}
-          {successMsg && (
-            <p className="text-green-600 text-center mt-4">{successMsg}</p>
-          )}
-
           <div className="text-center mt-4">
             <span className="text-gray-600">Don&apos;t have an account? </span>
             <Link href="/signup" className="text-blue-500 hover:underline">
@@ -134,4 +122,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default withGuestOnly(LoginPage);

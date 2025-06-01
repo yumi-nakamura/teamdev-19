@@ -9,6 +9,7 @@ export interface ArticleFormData {
   category_id: number;
   image: File | null;
   image_path?: string;
+  user_id?: string;
 }
 
 // カテゴリーの定義
@@ -22,9 +23,14 @@ const CATEGORIES = [
 interface ArticleFormProps {
   onSubmit: (formData: ArticleFormData) => void;
   initialData?: ArticleFormData;
+  deleteButton?: React.ReactNode;
 }
 
-const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
+const ArticleForm: React.FC<ArticleFormProps> = ({
+  onSubmit,
+  initialData,
+  deleteButton,
+}) => {
   // フォームの状態を初期化
   const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
@@ -32,6 +38,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
     category_id: 0,
     image: null,
   });
+
+  // 画像アップロード部分の状態はformData.imageで管理するため、imagePreviewのみ保持
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,12 +83,16 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
 
   // フォーム送信ボタンがクリックされたときに実行される関数
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.category_id === 0) {
-      alert("カテゴリーを選択してください");
+    e.preventDefault(); // ページのリロードを防止
+
+    if (!formData.image) {
+      alert("画像が選択されていません！");
       return;
     }
-    onSubmit(formData);
+
+    console.log("選択された画像ファイル:", formData.image);
+
+    onSubmit(formData); // 入力データを親コンポーネントに渡す
   };
 
   return (
@@ -163,7 +175,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
             className="border border-gray-300 rounded px-3 py-2 bg-white"
             required
           >
-            <option value="">選択してください</option>
+            <option value="">Select category</option>
             {CATEGORIES.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -187,7 +199,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onSubmit, initialData }) => {
         </div>
 
         {/* 送信ボタン */}
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-4">
+          {deleteButton}
           <button
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded"

@@ -1,86 +1,86 @@
 "use client";
-
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { supabase } from "./supabaseClient";
-
-// ユーザー型の定義
-type User = {
-  id: string;
-  email: string;
-};
+import { createContext, useContext, useEffect, useState, useRef } from "react";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
+import { supabase } from "./supabase";
 
 type AuthContextType = {
-  user: User | null;
+  user: SupabaseUser | null;
   loading: boolean;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  logout: () => Promise<void>;
+  signOut: () => Promise<void>;
+  signIn: (
+    email: string,
+    password: string,
+  ) => Promise<{ error: Error | null; user: SupabaseUser | null }>;
+  signUp: (
+    email: string,
+    password: string,
+  ) => Promise<{ error: Error | null; user: SupabaseUser | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
+};
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user && session.user.id && session.user.email) {
-          setUser({ id: session.user.id ?? "", email: session.user.email ?? "" });
-        } else {
-          setUser(null);
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          console.error("セッション確認エラー:", err.message);
-        } else {
-          console.error("セッション確認中に不明なエラーが発生しました");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    checkSession();
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
-      if (session?.user) {
-        setUser({ id: session.user.id ?? "", email: session.user.email ?? "" });
-      } else {
-        setUser(null);
-      }
-    });
-
+    (async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setLoading(false);
+      
+      const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+      });
+      
+      subscriptionRef.current = data.subscription;
+    })();
+    
     return () => {
-      listener.subscription.unsubscribe();
+      if (subscriptionRef.current) subscriptionRef.current.unsubscribe();
     };
   }, []);
 
-  const logout = async () => {
+  const signIn: AuthContextType["signIn"] = async (email, password) => {
     try {
-      await supabase.auth.signOut();
-      setUser(null);
-      console.log("ログアウトしました");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error("ログアウトエラー:", err.message);
-      } else {
-        console.error("ログアウト中に不明なエラーが発生しました");
-      }
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      return { error: null, user: data.user };
+    } catch (error) {
+      return { error: error as Error, user: null };
     }
   };
 
+  const signUp: AuthContextType["signUp"] = async (email, password) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      return { error: null, user: data.user };
+    } catch (error) {
+      return { error: error as Error, user: null };
+    }
+  };
+
+  const signOut: AuthContextType["signOut"] = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
   return (
-    <AuthContext.Provider value={{ user, loading, setUser, logout }}>
+    <AuthContext.Provider value={{ user, loading, signOut, signIn, signUp }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};

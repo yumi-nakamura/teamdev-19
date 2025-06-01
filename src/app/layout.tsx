@@ -25,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+
         <AuthProvider>
         {children}
         </AuthProvider>
+        
       </body>
     </html>
   );

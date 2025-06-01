@@ -1,33 +1,72 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
 
 interface Comment {
   id: number;
   user_id: string;
   post_id: number;
   content: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
 }
 
-export const CommentSection = () => {
+export const CommentSection = ({ postId }: { postId: string | number }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
+  // const [userId, setUserId] = useState<string | null>(null);
 
-  const handleAddComment = () => {
+  // コメント取得
+  useEffect(() => {
+    const fetchComments = async () => {
+      const { data, error } = await supabase
+        .from("comments")
+        .select("*")
+        .eq("post_id", postId)
+        .order("created_at", { ascending: false });
+      if (!error && data) setComments(data);
+    };
+    fetchComments();
+
+    // --- リアルタイム購読 ---
+    const channel = supabase
+      .channel("comments")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "comments",
+          filter: `post_id=eq.${postId}`,
+        },
+        (payload) => {
+          setComments((prev) => [payload.new as Comment, ...prev]);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [postId]);
+
+  // コメント投稿
+  const handleAddComment = async () => {
     if (commentText.trim() === "") return;
-    setComments([
-      ...comments,
-      {
-        id: Math.floor(Math.random() * 1000) + 1, // ランダムにIDを割り振る（バックエンド作成後は消す）
-        user_id: "abcdefg", // バックエンド作成後は消す
-        post_id: 1, // バックエンド作成後は消す
-        content: commentText,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-    ]);
-    setCommentText(""); // コメント追加後に入力欄をクリア
+    const { data, error } = await supabase
+      .from("comments")
+      .insert([
+        {
+          post_id: 38,
+          content: commentText,
+          user_id: "aefe67ab-e521-4621-8042-08d3a09ea3f3",
+        },
+      ])
+      .select();
+    if (!error && data && data[0]) {
+      setComments([data[0], ...comments]);
+      setCommentText("");
+    }
   };
 
   return (
