@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import Pagination from "../../components/Pagination";
-import PostCard from "../../components/PostCard";
+import Pagination from "@/components/Pagination";
+import PostCard from "@/components/PostCard";
 import "../globals.css";
-import { withAuth } from "../../libs/withAuth";
+import { withAuth } from "@/libs/withAuth";
 import Header from "@/components/Header";
 
 export default withAuth(function Profile() {
@@ -31,23 +31,33 @@ export default withAuth(function Profile() {
   };
 
   return (
-    <div>
+    <>
       <Header />
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogPosts.map((post) => (
-            <PostCard key={post.post_id} {...post} categoryName="カテゴリー" />
-          ))}
-        </div>
-        <div className="mt-8">
-          <Pagination
-            totalPages={Math.ceil(blogPosts.length / pageSize)}
-            pageSize={pageSize}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-        </div>
-      </main>
-    </div>
+      <div className="bg-gray-50 text-gray-900">
+        <main>
+          <h1 className="max-w-6xl text-center mt-10 text-4xl font-bold text-gray-500">
+            Your Post
+          </h1>
+          <div className="max-w-6xl mx-auto flex flex-wrap gap-15 m-15">
+            {Array(6)
+              .fill(null)
+              .map((_, index) => (
+                <PostCard key={index} {...blogPosts[0]} />
+              ))}
+          </div>
+          <div style={{ padding: 20 }}>
+            <Pagination
+              totalPages={10}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        </main>
+        <footer className="bg-white mt-16 py-4 text-center text-sm text-gray-500">
+          © {new Date().getFullYear()} TeamDev19. All rights reserved.
+        </footer>
+      </div>
+    </>
   );
 });
