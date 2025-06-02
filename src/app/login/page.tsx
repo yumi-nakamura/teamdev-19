@@ -23,7 +23,9 @@ const LoginPage = () => {
       const { error, user } = await signIn(email, password);
       setLoading(false);
       if (error) {
-        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
+        setError(
+          "ログインに失敗しました。メールアドレスとパスワードを確認してください。",
+        );
         return;
       }
       if (user) {
@@ -70,7 +72,10 @@ const LoginPage = () => {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email
                 </label>
                 <input
@@ -85,7 +90,10 @@ const LoginPage = () => {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Password
                 </label>
                 <input
